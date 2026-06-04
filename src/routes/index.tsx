@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Home } from "@/components/workout/Home";
 import { ActiveWorkout } from "@/components/workout/ActiveWorkout";
-import { newWorkout, useWorkouts, type Workout } from "@/lib/workout-store";
+import { TemplatePicker } from "@/components/workout/TemplatePicker";
+import { useWorkouts, type Workout } from "@/lib/workout-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   const { workouts, save } = useWorkouts();
   const [active, setActive] = useState<Workout | null>(null);
+  const [picking, setPicking] = useState(false);
 
   if (active) {
     return (
@@ -36,5 +38,17 @@ function Index() {
     );
   }
 
-  return <Home workouts={workouts} onStart={() => setActive(newWorkout())} />;
+  return (
+    <>
+      <Home workouts={workouts} onStart={() => setPicking(true)} />
+      <TemplatePicker
+        open={picking}
+        onClose={() => setPicking(false)}
+        onPick={(w) => {
+          setPicking(false);
+          setActive(w);
+        }}
+      />
+    </>
+  );
 }

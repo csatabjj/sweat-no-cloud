@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 
 export type SetEntry = { id: string; weight: number; reps: number; done: boolean };
-export type Exercise = { id: string; name: string; sets: SetEntry[] };
+export type Exercise = { id: string; name: string; sets: SetEntry[]; note?: string };
 export type Workout = {
   id: string;
   date: string; // ISO
