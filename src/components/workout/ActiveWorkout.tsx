@@ -97,8 +97,13 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel }: Props) 
       <main className="flex-1 space-y-4 px-5 pt-5">
         {workout.exercises.map((ex) => (
           <section key={ex.id} className="rounded-2xl bg-card p-4 shadow-sm">
-            <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-base font-semibold">{ex.name}</h3>
+            <div className="mb-3 flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <h3 className="text-base font-semibold">{ex.name}</h3>
+                {ex.note && (
+                  <p className="mt-0.5 text-xs text-muted-foreground">{ex.note}</p>
+                )}
+              </div>
               <button onClick={() => removeExercise(ex.id)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary">
                 <Trash2 className="h-4 w-4" />
               </button>
