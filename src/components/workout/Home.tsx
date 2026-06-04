@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Dumbbell, Flame, TrendingUp, Calendar, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ProgressView } from "./ProgressView";
 import type { Workout } from "@/lib/workout-store";
 
 type Props = {
@@ -10,6 +12,7 @@ type Props = {
 const dayNames = ["V", "H", "K", "Sz", "Cs", "P", "Sz"];
 
 export function Home({ workouts, onStart }: Props) {
+  const [tab, setTab] = useState<"history" | "progress">("history");
   const finished = workouts.filter((w) => w.finishedAt);
   const totalVolume = finished.reduce(
     (n, w) =>
@@ -90,44 +93,65 @@ export function Home({ workouts, onStart }: Props) {
 
       <section className="px-5 pt-8">
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-bold">Előzmények</h2>
+          <div className="flex gap-1 rounded-xl bg-secondary/60 p-1">
+            <button
+              onClick={() => setTab("history")}
+              className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition ${
+                tab === "history" ? "bg-background shadow-sm" : "text-muted-foreground"
+              }`}
+            >
+              Előzmények
+            </button>
+            <button
+              onClick={() => setTab("progress")}
+              className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition ${
+                tab === "progress" ? "bg-background shadow-sm" : "text-muted-foreground"
+              }`}
+            >
+              Fejlődés
+            </button>
+          </div>
           <Calendar className="h-4 w-4 text-muted-foreground" />
         </div>
-        {recent.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-border p-8 text-center">
-            <p className="text-sm text-muted-foreground">Még nincs befejezett edzés.</p>
-            <p className="mt-1 text-xs text-muted-foreground">Indítsd el az elsőt lent.</p>
-          </div>
+        {tab === "history" ? (
+          recent.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-border p-8 text-center">
+              <p className="text-sm text-muted-foreground">Még nincs befejezett edzés.</p>
+              <p className="mt-1 text-xs text-muted-foreground">Indítsd el az elsőt lent.</p>
+            </div>
+          ) : (
+            <ul className="space-y-2">
+              {recent.map((w) => {
+                const sets = w.exercises.reduce((n, e) => n + e.sets.filter((s) => s.done).length, 0);
+                const vol = w.exercises.reduce(
+                  (n, e) => n + e.sets.filter((s) => s.done).reduce((k, s) => k + s.weight * s.reps, 0),
+                  0,
+                );
+                return (
+                  <li key={w.id} className="rounded-2xl bg-card p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold">{w.name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(w.finishedAt!).toLocaleDateString("hu-HU", {
+                            month: "short",
+                            day: "numeric",
+                            weekday: "short",
+                          })}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-bold">{vol} kg</p>
+                        <p className="text-xs text-muted-foreground">{sets} szett · {w.exercises.length} gyakorlat</p>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )
         ) : (
-          <ul className="space-y-2">
-            {recent.map((w) => {
-              const sets = w.exercises.reduce((n, e) => n + e.sets.filter((s) => s.done).length, 0);
-              const vol = w.exercises.reduce(
-                (n, e) => n + e.sets.filter((s) => s.done).reduce((k, s) => k + s.weight * s.reps, 0),
-                0,
-              );
-              return (
-                <li key={w.id} className="rounded-2xl bg-card p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold">{w.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(w.finishedAt!).toLocaleDateString("hu-HU", {
-                          month: "short",
-                          day: "numeric",
-                          weekday: "short",
-                        })}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-bold">{vol} kg</p>
-                      <p className="text-xs text-muted-foreground">{sets} szett · {w.exercises.length} gyakorlat</p>
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+          <ProgressView workouts={workouts} />
         )}
       </section>
 
