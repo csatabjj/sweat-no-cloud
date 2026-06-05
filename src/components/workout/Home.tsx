@@ -43,6 +43,40 @@ export function Home({ workouts, onStart }: Props) {
 
   const recent = [...finished].reverse().slice(0, 8);
 
+  const exportToCsv = useCallback(() => {
+    if (finished.length === 0) return;
+    const rows: string[][] = [];
+    rows.push(["Edzes", "Datum", "Gyakorlat", "Set", "Suly (kg)", "Ismetles", "Megjegyzes"]);
+    for (const w of finished) {
+      const date = new Date(w.finishedAt!).toLocaleDateString("hu-HU");
+      for (const ex of w.exercises) {
+        const doneSets = ex.sets.filter((s) => s.done);
+        if (doneSets.length === 0) continue;
+        doneSets.forEach((s, idx) => {
+          rows.push([
+            w.name,
+            date,
+            ex.name,
+            String(idx + 1),
+            String(s.weight),
+            String(s.reps),
+            ex.note || "",
+          ]);
+        });
+      }
+    }
+    const csv = rows.map((r) => r.map((c) => `"${c.replace(/"/g, "\""")}"`).join(";")).join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `edzesek_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, [finished]);
+
   return (
     <div className="min-h-screen pb-32">
       <header className="px-5 pb-6 pt-12">
