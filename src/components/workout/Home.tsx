@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Dumbbell, Flame, TrendingUp, Calendar, Plus } from "lucide-react";
+import { useState, useCallback } from "react";
+import { Dumbbell, Flame, TrendingUp, Calendar, Plus, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProgressView } from "./ProgressView";
 import type { Workout } from "@/lib/workout-store";
