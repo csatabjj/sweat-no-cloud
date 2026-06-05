@@ -109,10 +109,11 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel }: Props) 
               </button>
             </div>
 
-            <div className="mb-2 grid grid-cols-[28px_1fr_1fr_44px] gap-2 px-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+            <div className="mb-2 grid grid-cols-[24px_1fr_1fr_40px_32px] gap-2 px-1 text-[10px] uppercase tracking-wider text-muted-foreground">
               <span>#</span>
               <span>Súly (kg)</span>
               <span>Ism.</span>
+              <span></span>
               <span></span>
             </div>
 
@@ -120,7 +121,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel }: Props) 
               {ex.sets.map((s, i) => (
                 <div
                   key={s.id}
-                  className={`grid grid-cols-[28px_1fr_1fr_44px] items-center gap-2 rounded-xl px-1 py-1 transition ${
+                  className={`grid grid-cols-[24px_1fr_1fr_40px_32px] items-center gap-2 rounded-xl px-1 py-1 transition ${
                     s.done ? "bg-primary/10" : ""
                   }`}
                 >
@@ -143,7 +144,6 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel }: Props) 
                   />
                   <button
                     onClick={() => updateSet(ex, s.id, { done: !s.done })}
-                    onDoubleClick={() => removeSet(ex, s.id)}
                     className={`flex h-10 w-10 items-center justify-center rounded-lg transition ${
                       s.done
                         ? "bg-primary text-primary-foreground"
@@ -152,6 +152,14 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel }: Props) 
                     aria-label="Kész"
                   >
                     <Check className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={() => removeSet(ex, s.id)}
+                    disabled={ex.sets.length === 1}
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive disabled:opacity-30"
+                    aria-label="Szett törlése"
+                  >
+                    <X className="h-4 w-4" />
                   </button>
                 </div>
               ))}
