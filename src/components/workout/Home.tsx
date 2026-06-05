@@ -65,7 +65,7 @@ export function Home({ workouts, onStart }: Props) {
         });
       }
     }
-    const csv = rows.map((r) => r.map((c) => `"${c.replace(/"/g, "\""")}"`).join(";")).join("\n");
+    const csv = rows.map((r) => r.map((c) => '"' + c.replace(/"/g, '""') + '"').join(";")).join("\n");
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -145,7 +145,14 @@ export function Home({ workouts, onStart }: Props) {
               Fejlődés
             </button>
           </div>
-          <Calendar className="h-4 w-4 text-muted-foreground" />
+          <button
+            onClick={exportToCsv}
+            disabled={finished.length === 0}
+            className="flex items-center gap-1.5 rounded-lg bg-secondary/60 px-3 py-1.5 text-sm font-semibold text-muted-foreground transition active:scale-95 disabled:opacity-40"
+          >
+            <Download className="h-4 w-4" />
+            CSV
+          </button>
         </div>
         {tab === "history" ? (
           recent.length === 0 ? (
