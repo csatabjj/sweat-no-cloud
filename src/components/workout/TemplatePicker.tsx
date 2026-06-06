@@ -1,16 +1,23 @@
 import { useState } from "react";
-import { Dumbbell, X } from "lucide-react";
+import { Dumbbell, X, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { TEMPLATES, suggestedTemplateId, templateToExercises } from "@/lib/workout-templates";
+import {
+  TEMPLATES,
+  suggestedTemplateId,
+  templateToExercises,
+  findLastWorkoutForTemplate,
+  applyPreviousWorkout,
+} from "@/lib/workout-templates";
 import { newWorkout, type Workout } from "@/lib/workout-store";
 
 type Props = {
   open: boolean;
   onClose: () => void;
   onPick: (w: Workout) => void;
+  workouts: Workout[];
 };
 
-export function TemplatePicker({ open, onClose, onPick }: Props) {
+export function TemplatePicker({ open, onClose, onPick, workouts }: Props) {
   const [selected, setSelected] = useState<string>(suggestedTemplateId());
 
   if (!open) return null;
@@ -19,7 +26,8 @@ export function TemplatePicker({ open, onClose, onPick }: Props) {
   const startFromTemplate = () => {
     const t = TEMPLATES.find((x) => x.id === selected)!;
     const w = newWorkout(t.name);
-    w.exercises = templateToExercises(t);
+    const prev = findLastWorkoutForTemplate(workouts, t.name);
+    w.exercises = applyPreviousWorkout(templateToExercises(t), prev);
     onPick(w);
   };
 
