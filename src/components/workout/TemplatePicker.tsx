@@ -46,6 +46,10 @@ export function TemplatePicker({ open, onClose, onPick, workouts }: Props) {
           {TEMPLATES.map((t) => {
             const isSel = selected === t.id;
             const isSuggested = t.id === suggestedTemplateId();
+            const prev = findLastWorkoutForTemplate(workouts, t.name);
+            const prevDate = prev?.finishedAt
+              ? new Date(prev.finishedAt).toLocaleDateString("hu-HU", { month: "short", day: "numeric" })
+              : null;
             return (
               <button
                 key={t.id}
@@ -73,6 +77,12 @@ export function TemplatePicker({ open, onClose, onPick, workouts }: Props) {
                     <p className="mt-1 text-xs text-muted-foreground">
                       {t.exercises.length} gyakorlat
                     </p>
+                    {prevDate && (
+                      <p className="mt-1.5 flex items-center gap-1 text-[11px] font-medium text-primary">
+                        <TrendingUp className="h-3 w-3" />
+                        Előző számok átemelve ({prevDate})
+                      </p>
+                    )}
                   </div>
                   <Dumbbell
                     className={`h-5 w-5 shrink-0 ${isSel ? "text-primary" : "text-muted-foreground"}`}
