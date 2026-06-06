@@ -122,3 +122,44 @@ export function suggestedTemplateId(): string {
   if (d <= 5) return "a2";
   return "b2";
 }
+
+/**
+ * Find the most recent finished workout that matches this template (by name).
+ */
+export function findLastWorkoutForTemplate(
+  workouts: Workout[],
+  templateName: string,
+): Workout | undefined {
+  return [...workouts]
+    .filter((w) => w.finishedAt && w.name === templateName)
+    .sort((a, b) => (b.finishedAt ?? "").localeCompare(a.finishedAt ?? ""))
+    .at(0);
+}
+
+/**
+ * Override per-set weight/reps with the values done in the previous session,
+ * so the user starts from their last achieved numbers and pushes for a new record.
+ * Matches exercises by name (case-insensitive, trimmed), and sets by index.
+ * Only inherits from sets that were marked done.
+ */
+export function applyPreviousWorkout(exercises: Exercise[], prev?: Workout): Exercise[] {
+  if (!prev) return exercises;
+  const key = (s: string) => s.trim().toLowerCase();
+  const prevByName = new Map<string, Exercise>();
+  for (const e of prev.exercises) prevByName.set(key(e.name), e);
+
+  return exercises.map((ex) => {
+    const p = prevByName.get(key(ex.name));
+    if (!p) return ex;
+    const doneSets = p.sets.filter((s) => s.done);
+    if (doneSets.length === 0) return ex;
+    const fallback = doneSets[doneSets.length - 1];
+    return {
+      ...ex,
+      sets: ex.sets.map((s, i) => {
+        const prevSet = doneSets[i] ?? fallback;
+        return { ...s, weight: prevSet.weight, reps: prevSet.reps };
+      }),
+    };
+  });
+}
