@@ -1,4 +1,4 @@
-import type { Exercise } from "./workout-store";
+import type { Exercise, Workout } from "./workout-store";
 import { uid } from "./workout-store";
 
 export type WorkoutTemplate = {
