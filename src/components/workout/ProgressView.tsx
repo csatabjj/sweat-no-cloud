@@ -45,7 +45,11 @@ function formatWeekRange(start: Date): string {
 }
 
 export function ProgressView({ workouts }: Props) {
-  const finished = workouts.filter((w) => w.finishedAt);
+  const finished = workouts.filter((w) => {
+    if (!w.finishedAt) return false;
+    const hasResult = w.exercises.some((e) => e.sets.some((s) => s.done && s.weight > 0));
+    return hasResult;
+  });
   const [expanded, setExpanded] = useState<string | null>(null);
 
   const weeks = useMemo<WeekStat[]>(() => {
