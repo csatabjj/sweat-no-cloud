@@ -44,6 +44,7 @@ function Index() {
       <TemplatePicker
         open={picking}
         onClose={() => setPicking(false)}
+        workouts={workouts}
         onPick={(w) => {
           setPicking(false);
           setActive(w);
