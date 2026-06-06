@@ -64,8 +64,8 @@ export const TEMPLATES: WorkoutTemplate[] = [
   {
     id: "b2",
     day: "Vasárnap",
-    name: "B2 — Könnyű / sebesség",
-    focus: "Squat 65–70%, robbanékony",
+    name: "B2 — Hipertrófia",
+    focus: "Volumen — cél RPE 7–8",
     exercises: [
       { name: "High bar squat", sets: 6, reps: "3", weight: "80", rpe: "6" },
       { name: "Nyomás egykezes / keret 30°", sets: 4, reps: "8-10", weight: "27,5/70", rpe: "8" },
