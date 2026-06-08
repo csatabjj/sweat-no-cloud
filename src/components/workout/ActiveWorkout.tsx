@@ -79,21 +79,29 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
             <X className="h-5 w-5" />
           </button>
           <div className="text-center">
-            <p className="text-xs uppercase tracking-widest text-muted-foreground">Folyamatban</p>
+            <p className="text-xs uppercase tracking-widest text-muted-foreground">
+              {planMode ? "Tervezés" : "Folyamatban"}
+            </p>
             <p className="text-sm font-semibold">{workout.name}</p>
           </div>
           <div className="w-9" />
         </div>
-        <div className="mt-3 grid grid-cols-2 gap-3 text-center">
-          <div className="rounded-xl bg-secondary/60 py-2">
-            <p className="text-xs text-muted-foreground">Szettek</p>
-            <p className="text-lg font-bold">{totalSets}</p>
+        {planMode ? (
+          <div className="mt-3 rounded-xl bg-secondary/60 px-3 py-2 text-center text-xs text-muted-foreground">
+            Szabadon szerkesztheted a gyakorlatokat és számokat. A mentés után minden új edzés ebből indul.
           </div>
-          <div className="rounded-xl bg-secondary/60 py-2">
-            <p className="text-xs text-muted-foreground">Volumen</p>
-            <p className="text-lg font-bold">{totalVolume} kg</p>
+        ) : (
+          <div className="mt-3 grid grid-cols-2 gap-3 text-center">
+            <div className="rounded-xl bg-secondary/60 py-2">
+              <p className="text-xs text-muted-foreground">Szettek</p>
+              <p className="text-lg font-bold">{totalSets}</p>
+            </div>
+            <div className="rounded-xl bg-secondary/60 py-2">
+              <p className="text-xs text-muted-foreground">Volumen</p>
+              <p className="text-lg font-bold">{totalVolume} kg</p>
+            </div>
           </div>
-        </div>
+        )}
       </header>
 
       <main className="flex-1 space-y-4 px-5 pt-5">
