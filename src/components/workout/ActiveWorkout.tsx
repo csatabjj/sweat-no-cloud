@@ -10,9 +10,11 @@ type Props = {
   onChange: (w: Workout) => void;
   onFinish: () => void;
   onCancel: () => void;
+  planMode?: boolean;
+  onReset?: () => void;
 };
 
-export function ActiveWorkout({ workout, onChange, onFinish, onCancel }: Props) {
+export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode, onReset }: Props) {
   const [exerciseName, setExerciseName] = useState("");
 
   const addExercise = () => {
