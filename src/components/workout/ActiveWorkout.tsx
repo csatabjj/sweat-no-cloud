@@ -10,9 +10,11 @@ type Props = {
   onChange: (w: Workout) => void;
   onFinish: () => void;
   onCancel: () => void;
+  planMode?: boolean;
+  onReset?: () => void;
 };
 
-export function ActiveWorkout({ workout, onChange, onFinish, onCancel }: Props) {
+export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode, onReset }: Props) {
   const [exerciseName, setExerciseName] = useState("");
 
   const addExercise = () => {
@@ -77,31 +79,55 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel }: Props) 
             <X className="h-5 w-5" />
           </button>
           <div className="text-center">
-            <p className="text-xs uppercase tracking-widest text-muted-foreground">Folyamatban</p>
+            <p className="text-xs uppercase tracking-widest text-muted-foreground">
+              {planMode ? "Tervezés" : "Folyamatban"}
+            </p>
             <p className="text-sm font-semibold">{workout.name}</p>
           </div>
           <div className="w-9" />
         </div>
-        <div className="mt-3 grid grid-cols-2 gap-3 text-center">
-          <div className="rounded-xl bg-secondary/60 py-2">
-            <p className="text-xs text-muted-foreground">Szettek</p>
-            <p className="text-lg font-bold">{totalSets}</p>
+        {planMode ? (
+          <div className="mt-3 rounded-xl bg-secondary/60 px-3 py-2 text-center text-xs text-muted-foreground">
+            Szabadon szerkesztheted a gyakorlatokat és számokat. A mentés után minden új edzés ebből indul.
           </div>
-          <div className="rounded-xl bg-secondary/60 py-2">
-            <p className="text-xs text-muted-foreground">Volumen</p>
-            <p className="text-lg font-bold">{totalVolume} kg</p>
+        ) : (
+          <div className="mt-3 grid grid-cols-2 gap-3 text-center">
+            <div className="rounded-xl bg-secondary/60 py-2">
+              <p className="text-xs text-muted-foreground">Szettek</p>
+              <p className="text-lg font-bold">{totalSets}</p>
+            </div>
+            <div className="rounded-xl bg-secondary/60 py-2">
+              <p className="text-xs text-muted-foreground">Volumen</p>
+              <p className="text-lg font-bold">{totalVolume} kg</p>
+            </div>
           </div>
-        </div>
+        )}
       </header>
 
       <main className="flex-1 space-y-4 px-5 pt-5">
         {workout.exercises.map((ex) => (
           <section key={ex.id} className="rounded-2xl bg-card p-4 shadow-sm">
             <div className="mb-3 flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <h3 className="text-base font-semibold">{ex.name}</h3>
-                {ex.note && (
-                  <p className="mt-0.5 text-xs text-muted-foreground">{ex.note}</p>
+              <div className="min-w-0 flex-1">
+                {planMode ? (
+                  <Input
+                    value={ex.name}
+                    onChange={(e) => updateExercise(ex.id, { name: e.target.value })}
+                    className="h-9 text-base font-semibold"
+                    placeholder="Gyakorlat neve"
+                  />
+                ) : (
+                  <h3 className="text-base font-semibold">{ex.name}</h3>
+                )}
+                {planMode ? (
+                  <Input
+                    value={ex.note ?? ""}
+                    onChange={(e) => updateExercise(ex.id, { note: e.target.value })}
+                    className="mt-1 h-8 text-xs"
+                    placeholder="Megjegyzés (opcionális)"
+                  />
+                ) : (
+                  ex.note && <p className="mt-0.5 text-xs text-muted-foreground">{ex.note}</p>
                 )}
               </div>
               <button onClick={() => removeExercise(ex.id)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary">
@@ -191,13 +217,21 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel }: Props) 
       </main>
 
       <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background/95 px-5 pb-8 pt-4 backdrop-blur-xl">
+        {planMode && onReset && (
+          <button
+            onClick={onReset}
+            className="mb-2 w-full rounded-xl py-2 text-xs font-medium text-muted-foreground hover:text-destructive"
+          >
+            Visszaállítás alapértelmezettre
+          </button>
+        )}
         <Button
           onClick={onFinish}
           disabled={workout.exercises.length === 0}
           className="h-14 w-full rounded-2xl text-base font-semibold"
           style={{ backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
         >
-          Edzés befejezése
+          {planMode ? "Terv mentése" : "Edzés befejezése"}
         </Button>
       </div>
     </div>

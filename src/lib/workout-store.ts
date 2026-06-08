@@ -61,3 +61,54 @@ export function newWorkout(name = "Edzés"): Workout {
     exercises: [],
   };
 }
+
+// --- Template overrides (planning mode) ---
+
+export type TemplateOverrides = Record<string, Exercise[]>;
+
+const TKEY = "lifttrack:template-overrides:v1";
+
+function readOverrides(): TemplateOverrides {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = localStorage.getItem(TKEY);
+    return raw ? (JSON.parse(raw) as TemplateOverrides) : {};
+  } catch {
+    return {};
+  }
+}
+
+function writeOverrides(o: TemplateOverrides) {
+  localStorage.setItem(TKEY, JSON.stringify(o));
+  window.dispatchEvent(new Event("lifttrack:templates-update"));
+}
+
+export function useTemplateOverrides() {
+  const [overrides, setOverrides] = useState<TemplateOverrides>({});
+
+  useEffect(() => {
+    setOverrides(readOverrides());
+    const handler = () => setOverrides(readOverrides());
+    window.addEventListener("lifttrack:templates-update", handler);
+    window.addEventListener("storage", handler);
+    return () => {
+      window.removeEventListener("lifttrack:templates-update", handler);
+      window.removeEventListener("storage", handler);
+    };
+  }, []);
+
+  const saveOverride = useCallback((templateId: string, exercises: Exercise[]) => {
+    const next = { ...readOverrides(), [templateId]: exercises };
+    writeOverrides(next);
+    setOverrides(next);
+  }, []);
+
+  const resetOverride = useCallback((templateId: string) => {
+    const cur = readOverrides();
+    delete cur[templateId];
+    writeOverrides(cur);
+    setOverrides(cur);
+  }, []);
+
+  return { overrides, saveOverride, resetOverride };
+}

@@ -3,7 +3,13 @@ import { useState } from "react";
 import { Home } from "@/components/workout/Home";
 import { ActiveWorkout } from "@/components/workout/ActiveWorkout";
 import { TemplatePicker } from "@/components/workout/TemplatePicker";
-import { useWorkouts, type Workout } from "@/lib/workout-store";
+import {
+  useWorkouts,
+  useTemplateOverrides,
+  newWorkout,
+  type Workout,
+} from "@/lib/workout-store";
+import { TEMPLATES } from "@/lib/workout-templates";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -20,8 +26,29 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { workouts, save } = useWorkouts();
+  const { overrides, saveOverride, resetOverride } = useTemplateOverrides();
   const [active, setActive] = useState<Workout | null>(null);
   const [picking, setPicking] = useState(false);
+  const [planning, setPlanning] = useState<{ templateId: string; workout: Workout } | null>(null);
+
+  if (planning) {
+    return (
+      <ActiveWorkout
+        workout={planning.workout}
+        planMode
+        onChange={(w) => setPlanning({ ...planning, workout: w })}
+        onCancel={() => setPlanning(null)}
+        onReset={() => {
+          resetOverride(planning.templateId);
+          setPlanning(null);
+        }}
+        onFinish={() => {
+          saveOverride(planning.templateId, planning.workout.exercises);
+          setPlanning(null);
+        }}
+      />
+    );
+  }
 
   if (active) {
     return (
@@ -45,9 +72,17 @@ function Index() {
         open={picking}
         onClose={() => setPicking(false)}
         workouts={workouts}
+        overrides={overrides}
         onPick={(w) => {
           setPicking(false);
           setActive(w);
+        }}
+        onEdit={(templateId, exercises) => {
+          const t = TEMPLATES.find((x) => x.id === templateId);
+          const w = newWorkout(t?.name ?? "Sablon");
+          w.exercises = exercises;
+          setPicking(false);
+          setPlanning({ templateId, workout: w });
         }}
       />
     </>

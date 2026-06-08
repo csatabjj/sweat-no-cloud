@@ -1,23 +1,26 @@
 import { useState } from "react";
-import { Dumbbell, X, TrendingUp } from "lucide-react";
+import { Dumbbell, X, TrendingUp, Pencil, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   TEMPLATES,
   suggestedTemplateId,
-  templateToExercises,
+  getTemplateExercises,
+  cloneExercisesFresh,
   findLastWorkoutForTemplate,
   applyPreviousWorkout,
 } from "@/lib/workout-templates";
-import { newWorkout, type Workout } from "@/lib/workout-store";
+import { newWorkout, type Workout, type Exercise, type TemplateOverrides } from "@/lib/workout-store";
 
 type Props = {
   open: boolean;
   onClose: () => void;
   onPick: (w: Workout) => void;
+  onEdit: (templateId: string, exercises: Exercise[]) => void;
   workouts: Workout[];
+  overrides: TemplateOverrides;
 };
 
-export function TemplatePicker({ open, onClose, onPick, workouts }: Props) {
+export function TemplatePicker({ open, onClose, onPick, onEdit, workouts, overrides }: Props) {
   const [selected, setSelected] = useState<string>(suggestedTemplateId());
 
   if (!open) return null;
@@ -27,8 +30,16 @@ export function TemplatePicker({ open, onClose, onPick, workouts }: Props) {
     const t = TEMPLATES.find((x) => x.id === selected)!;
     const w = newWorkout(t.name);
     const prev = findLastWorkoutForTemplate(workouts, t.name);
-    w.exercises = applyPreviousWorkout(templateToExercises(t), prev);
+    w.exercises = applyPreviousWorkout(getTemplateExercises(t, overrides), prev);
     onPick(w);
+  };
+  const editTemplate = (id: string) => {
+    const t = TEMPLATES.find((x) => x.id === id)!;
+    // start editing from current state: override if present, else default
+    const exercises = overrides[id]
+      ? cloneExercisesFresh(overrides[id])
+      : getTemplateExercises(t);
+    onEdit(id, exercises);
   };
 
   return (
@@ -46,22 +57,24 @@ export function TemplatePicker({ open, onClose, onPick, workouts }: Props) {
           {TEMPLATES.map((t) => {
             const isSel = selected === t.id;
             const isSuggested = t.id === suggestedTemplateId();
+            const isCustomized = !!overrides[t.id];
             const prev = findLastWorkoutForTemplate(workouts, t.name);
             const prevDate = prev?.finishedAt
               ? new Date(prev.finishedAt).toLocaleDateString("hu-HU", { month: "short", day: "numeric" })
               : null;
+            const exerciseCount = overrides[t.id]?.length ?? t.exercises.length;
             return (
-              <button
+              <div
                 key={t.id}
-                onClick={() => setSelected(t.id)}
                 className={`w-full rounded-2xl border p-4 text-left transition ${
-                  isSel
-                    ? "border-primary bg-primary/10"
-                    : "border-border bg-secondary/40"
+                  isSel ? "border-primary bg-primary/10" : "border-border bg-secondary/40"
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
+                  <button
+                    onClick={() => setSelected(t.id)}
+                    className="min-w-0 flex-1 text-left"
+                  >
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                         {t.day}
@@ -71,24 +84,40 @@ export function TemplatePicker({ open, onClose, onPick, workouts }: Props) {
                           Ma
                         </span>
                       )}
+                      {isCustomized && (
+                        <span className="flex items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-foreground">
+                          <Sparkles className="h-3 w-3" />
+                          Egyéni
+                        </span>
+                      )}
                     </div>
                     <p className="mt-1 font-semibold">{t.name}</p>
                     <p className="mt-0.5 text-xs text-muted-foreground">{t.focus}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {t.exercises.length} gyakorlat
-                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">{exerciseCount} gyakorlat</p>
                     {prevDate && (
                       <p className="mt-1.5 flex items-center gap-1 text-[11px] font-medium text-primary">
                         <TrendingUp className="h-3 w-3" />
                         Előző számok átemelve ({prevDate})
                       </p>
                     )}
+                  </button>
+                  <div className="flex shrink-0 flex-col items-end gap-2">
+                    <Dumbbell
+                      className={`h-5 w-5 ${isSel ? "text-primary" : "text-muted-foreground"}`}
+                    />
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        editTemplate(t.id);
+                      }}
+                      className="rounded-lg p-1.5 text-muted-foreground hover:bg-background hover:text-foreground"
+                      aria-label="Sablon szerkesztése"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
                   </div>
-                  <Dumbbell
-                    className={`h-5 w-5 shrink-0 ${isSel ? "text-primary" : "text-muted-foreground"}`}
-                  />
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>
