@@ -114,6 +114,30 @@ export function templateToExercises(t: WorkoutTemplate): Exercise[] {
   });
 }
 
+/**
+ * Clone exercises (fresh ids, all sets reset to not-done) — used when starting
+ * a workout from a saved planning override.
+ */
+export function cloneExercisesFresh(exercises: Exercise[]): Exercise[] {
+  return exercises.map((e) => ({
+    ...e,
+    id: uid(),
+    sets: e.sets.map((s) => ({ ...s, id: uid(), done: false })),
+  }));
+}
+
+/**
+ * Get the exercises to start with for a template, applying any saved override.
+ */
+export function getTemplateExercises(
+  t: WorkoutTemplate,
+  overrides?: Record<string, Exercise[]>,
+): Exercise[] {
+  const override = overrides?.[t.id];
+  if (override && override.length > 0) return cloneExercisesFresh(override);
+  return templateToExercises(t);
+}
+
 export function suggestedTemplateId(): string {
   // Mon=1, Wed=3, Fri=5, Sun=0
   const d = new Date().getDay();
