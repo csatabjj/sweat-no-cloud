@@ -108,10 +108,26 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
         {workout.exercises.map((ex) => (
           <section key={ex.id} className="rounded-2xl bg-card p-4 shadow-sm">
             <div className="mb-3 flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <h3 className="text-base font-semibold">{ex.name}</h3>
-                {ex.note && (
-                  <p className="mt-0.5 text-xs text-muted-foreground">{ex.note}</p>
+              <div className="min-w-0 flex-1">
+                {planMode ? (
+                  <Input
+                    value={ex.name}
+                    onChange={(e) => updateExercise(ex.id, { name: e.target.value })}
+                    className="h-9 text-base font-semibold"
+                    placeholder="Gyakorlat neve"
+                  />
+                ) : (
+                  <h3 className="text-base font-semibold">{ex.name}</h3>
+                )}
+                {planMode ? (
+                  <Input
+                    value={ex.note ?? ""}
+                    onChange={(e) => updateExercise(ex.id, { note: e.target.value })}
+                    className="mt-1 h-8 text-xs"
+                    placeholder="Megjegyzés (opcionális)"
+                  />
+                ) : (
+                  ex.note && <p className="mt-0.5 text-xs text-muted-foreground">{ex.note}</p>
                 )}
               </div>
               <button onClick={() => removeExercise(ex.id)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary">
