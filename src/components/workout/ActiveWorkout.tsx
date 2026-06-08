@@ -217,13 +217,21 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
       </main>
 
       <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background/95 px-5 pb-8 pt-4 backdrop-blur-xl">
+        {planMode && onReset && (
+          <button
+            onClick={onReset}
+            className="mb-2 w-full rounded-xl py-2 text-xs font-medium text-muted-foreground hover:text-destructive"
+          >
+            Visszaállítás alapértelmezettre
+          </button>
+        )}
         <Button
           onClick={onFinish}
           disabled={workout.exercises.length === 0}
           className="h-14 w-full rounded-2xl text-base font-semibold"
           style={{ backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
         >
-          Edzés befejezése
+          {planMode ? "Terv mentése" : "Edzés befejezése"}
         </Button>
       </div>
     </div>
