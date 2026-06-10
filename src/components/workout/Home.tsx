@@ -211,14 +211,43 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
       </section>
 
       <div className="fixed inset-x-0 bottom-0 z-20 px-5 pb-8 pt-4">
-        <Button
-          onClick={onStart}
-          className="h-16 w-full rounded-2xl text-base font-bold"
-          style={{ backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
-        >
-          <Plus className="mr-2 h-5 w-5" />
-          Új edzés indítása
-        </Button>
+        {activeWorkout ? (
+          <div className="space-y-2">
+            <div className="flex gap-2">
+              <Button
+                onClick={onResume}
+                className="h-16 flex-1 rounded-2xl text-base font-bold"
+                style={{ backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
+              >
+                <Play className="mr-2 h-5 w-5" />
+                Vissza az edzéshez
+              </Button>
+              <Button
+                onClick={onDiscardActive}
+                variant="secondary"
+                className="h-16 w-16 rounded-2xl"
+                aria-label="Folyamatban lévő edzés eldobása"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            <button
+              onClick={onStart}
+              className="w-full text-center text-xs font-medium text-muted-foreground hover:text-foreground"
+            >
+              + Új edzés indítása helyette
+            </button>
+          </div>
+        ) : (
+          <Button
+            onClick={onStart}
+            className="h-16 w-full rounded-2xl text-base font-bold"
+            style={{ backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
+          >
+            <Plus className="mr-2 h-5 w-5" />
+            Új edzés indítása
+          </Button>
+        )}
       </div>
     </div>
   );
