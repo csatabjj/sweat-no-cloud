@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Dumbbell, Flame, TrendingUp, Calendar, Plus, Download } from "lucide-react";
+import { Dumbbell, Flame, TrendingUp, Plus, Download, Play, X, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProgressView } from "./ProgressView";
 import type { Workout } from "@/lib/workout-store";
@@ -7,11 +7,15 @@ import type { Workout } from "@/lib/workout-store";
 type Props = {
   workouts: Workout[];
   onStart: () => void;
+  activeWorkout?: Workout | null;
+  onResume?: () => void;
+  onDiscardActive?: () => void;
+  onEditFinished?: (w: Workout) => void;
 };
 
 const dayNames = ["V", "H", "K", "Sz", "Cs", "P", "Sz"];
 
-export function Home({ workouts, onStart }: Props) {
+export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActive, onEditFinished }: Props) {
   const [tab, setTab] = useState<"history" | "progress">("history");
   const finished = workouts.filter((w) => {
     if (!w.finishedAt) return false;
@@ -173,8 +177,11 @@ export function Home({ workouts, onStart }: Props) {
                   0,
                 );
                 return (
-                  <li key={w.id} className="rounded-2xl bg-card p-4">
-                    <div className="flex items-center justify-between">
+                  <li key={w.id}>
+                    <button
+                      onClick={() => onEditFinished?.(w)}
+                      className="flex w-full items-center justify-between rounded-2xl bg-card p-4 text-left transition active:scale-[0.99]"
+                    >
                       <div>
                         <p className="font-semibold">{w.name}</p>
                         <p className="text-xs text-muted-foreground">
@@ -185,11 +192,14 @@ export function Home({ workouts, onStart }: Props) {
                           })}
                         </p>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm font-bold">{vol} kg</p>
-                        <p className="text-xs text-muted-foreground">{sets} szett · {w.exercises.length} gyakorlat</p>
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <p className="text-sm font-bold">{vol} kg</p>
+                          <p className="text-xs text-muted-foreground">{sets} szett · {w.exercises.length} gyakorlat</p>
+                        </div>
+                        <Pencil className="h-4 w-4 text-muted-foreground" />
                       </div>
-                    </div>
+                    </button>
                   </li>
                 );
               })}
@@ -201,14 +211,43 @@ export function Home({ workouts, onStart }: Props) {
       </section>
 
       <div className="fixed inset-x-0 bottom-0 z-20 px-5 pb-8 pt-4">
-        <Button
-          onClick={onStart}
-          className="h-16 w-full rounded-2xl text-base font-bold"
-          style={{ backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
-        >
-          <Plus className="mr-2 h-5 w-5" />
-          Új edzés indítása
-        </Button>
+        {activeWorkout ? (
+          <div className="space-y-2">
+            <div className="flex gap-2">
+              <Button
+                onClick={onResume}
+                className="h-16 flex-1 rounded-2xl text-base font-bold"
+                style={{ backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
+              >
+                <Play className="mr-2 h-5 w-5" />
+                Vissza az edzéshez
+              </Button>
+              <Button
+                onClick={onDiscardActive}
+                variant="secondary"
+                className="h-16 w-16 rounded-2xl"
+                aria-label="Folyamatban lévő edzés eldobása"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            <button
+              onClick={onStart}
+              className="w-full text-center text-xs font-medium text-muted-foreground hover:text-foreground"
+            >
+              + Új edzés indítása helyette
+            </button>
+          </div>
+        ) : (
+          <Button
+            onClick={onStart}
+            className="h-16 w-full rounded-2xl text-base font-bold"
+            style={{ backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
+          >
+            <Plus className="mr-2 h-5 w-5" />
+            Új edzés indítása
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -28,6 +28,7 @@ function Index() {
   const { workouts, save } = useWorkouts();
   const { overrides, saveOverride, resetOverride } = useTemplateOverrides();
   const [active, setActive] = useState<Workout | null>(null);
+  const [showActive, setShowActive] = useState(false);
   const [picking, setPicking] = useState(false);
   const [planning, setPlanning] = useState<{ templateId: string; workout: Workout } | null>(null);
 
@@ -50,16 +51,37 @@ function Index() {
     );
   }
 
-  if (active) {
+  if (active && showActive) {
+    const isExisting = workouts.some((w) => w.id === active.id);
+    const isEditingFinished = isExisting && !!active.finishedAt;
     return (
       <ActiveWorkout
         workout={active}
+        editingFinished={isEditingFinished}
         onChange={setActive}
-        onCancel={() => setActive(null)}
+        onCancel={() => setShowActive(false)}
+        onDiscard={() => {
+          if (isExisting) {
+            // editing existing: cancel without saving changes
+            setActive(null);
+            setShowActive(false);
+          } else {
+            setActive(null);
+            setShowActive(false);
+          }
+        }}
         onFinish={() => {
-          const finished = { ...active, finishedAt: new Date().toISOString() };
-          save([...workouts, finished]);
+          const finished = {
+            ...active,
+            finishedAt: active.finishedAt ?? new Date().toISOString(),
+          };
+          if (isExisting) {
+            save(workouts.map((w) => (w.id === finished.id ? finished : w)));
+          } else {
+            save([...workouts, finished]);
+          }
           setActive(null);
+          setShowActive(false);
         }}
       />
     );
@@ -67,7 +89,17 @@ function Index() {
 
   return (
     <>
-      <Home workouts={workouts} onStart={() => setPicking(true)} />
+      <Home
+        workouts={workouts}
+        activeWorkout={active}
+        onResume={() => setShowActive(true)}
+        onDiscardActive={() => setActive(null)}
+        onStart={() => setPicking(true)}
+        onEditFinished={(w) => {
+          setActive(w);
+          setShowActive(true);
+        }}
+      />
       <TemplatePicker
         open={picking}
         onClose={() => setPicking(false)}
@@ -76,6 +108,7 @@ function Index() {
         onPick={(w) => {
           setPicking(false);
           setActive(w);
+          setShowActive(true);
         }}
         onEdit={(templateId, exercises) => {
           const t = TEMPLATES.find((x) => x.id === templateId);

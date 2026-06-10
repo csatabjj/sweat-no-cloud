@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Plus, Trash2, X } from "lucide-react";
+import { Check, Plus, Trash2, X, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Workout, Exercise } from "@/lib/workout-store";
@@ -12,9 +12,11 @@ type Props = {
   onCancel: () => void;
   planMode?: boolean;
   onReset?: () => void;
+  editingFinished?: boolean;
+  onDiscard?: () => void;
 };
 
-export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode, onReset }: Props) {
+export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode, onReset, editingFinished, onDiscard }: Props) {
   const [exerciseName, setExerciseName] = useState("");
 
   const addExercise = () => {
@@ -75,16 +77,22 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
     <div className="flex min-h-screen flex-col pb-32">
       <header className="sticky top-0 z-10 border-b border-border bg-background/80 px-5 py-4 backdrop-blur-xl">
         <div className="flex items-center justify-between">
-          <button onClick={onCancel} className="rounded-full p-2 text-muted-foreground hover:bg-secondary">
-            <X className="h-5 w-5" />
+          <button onClick={onCancel} className="flex items-center gap-1 rounded-full p-2 text-muted-foreground hover:bg-secondary" aria-label="Vissza">
+            <ChevronLeft className="h-5 w-5" />
           </button>
           <div className="text-center">
             <p className="text-xs uppercase tracking-widest text-muted-foreground">
-              {planMode ? "Tervezés" : "Folyamatban"}
+              {planMode ? "Tervezés" : editingFinished ? "Szerkesztés" : "Folyamatban"}
             </p>
             <p className="text-sm font-semibold">{workout.name}</p>
           </div>
-          <div className="w-9" />
+          {onDiscard && !planMode ? (
+            <button onClick={onDiscard} className="rounded-full p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive" aria-label="Eldobás">
+              <Trash2 className="h-5 w-5" />
+            </button>
+          ) : (
+            <div className="w-9" />
+          )}
         </div>
         {planMode ? (
           <div className="mt-3 rounded-xl bg-secondary/60 px-3 py-2 text-center text-xs text-muted-foreground">
@@ -231,7 +239,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
           className="h-14 w-full rounded-2xl text-base font-semibold"
           style={{ backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
         >
-          {planMode ? "Terv mentése" : "Edzés befejezése"}
+          {planMode ? "Terv mentése" : editingFinished ? "Módosítások mentése" : "Edzés befejezése"}
         </Button>
       </div>
     </div>
