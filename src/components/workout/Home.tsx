@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Dumbbell, Flame, TrendingUp, Calendar, Plus, Download } from "lucide-react";
+import { Dumbbell, Flame, TrendingUp, Plus, Download, Play, X, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProgressView } from "./ProgressView";
 import type { Workout } from "@/lib/workout-store";
@@ -7,11 +7,15 @@ import type { Workout } from "@/lib/workout-store";
 type Props = {
   workouts: Workout[];
   onStart: () => void;
+  activeWorkout?: Workout | null;
+  onResume?: () => void;
+  onDiscardActive?: () => void;
+  onEditFinished?: (w: Workout) => void;
 };
 
 const dayNames = ["V", "H", "K", "Sz", "Cs", "P", "Sz"];
 
-export function Home({ workouts, onStart }: Props) {
+export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActive, onEditFinished }: Props) {
   const [tab, setTab] = useState<"history" | "progress">("history");
   const finished = workouts.filter((w) => {
     if (!w.finishedAt) return false;
