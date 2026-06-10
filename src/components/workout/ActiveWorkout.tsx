@@ -239,7 +239,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
           className="h-14 w-full rounded-2xl text-base font-semibold"
           style={{ backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
         >
-          {planMode ? "Terv mentése" : "Edzés befejezése"}
+          {planMode ? "Terv mentése" : editingFinished ? "Módosítások mentése" : "Edzés befejezése"}
         </Button>
       </div>
     </div>
