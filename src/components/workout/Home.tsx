@@ -177,8 +177,11 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
                   0,
                 );
                 return (
-                  <li key={w.id} className="rounded-2xl bg-card p-4">
-                    <div className="flex items-center justify-between">
+                  <li key={w.id}>
+                    <button
+                      onClick={() => onEditFinished?.(w)}
+                      className="flex w-full items-center justify-between rounded-2xl bg-card p-4 text-left transition active:scale-[0.99]"
+                    >
                       <div>
                         <p className="font-semibold">{w.name}</p>
                         <p className="text-xs text-muted-foreground">
@@ -189,11 +192,14 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
                           })}
                         </p>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm font-bold">{vol} kg</p>
-                        <p className="text-xs text-muted-foreground">{sets} szett · {w.exercises.length} gyakorlat</p>
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <p className="text-sm font-bold">{vol} kg</p>
+                          <p className="text-xs text-muted-foreground">{sets} szett · {w.exercises.length} gyakorlat</p>
+                        </div>
+                        <Pencil className="h-4 w-4 text-muted-foreground" />
                       </div>
-                    </div>
+                    </button>
                   </li>
                 );
               })}
