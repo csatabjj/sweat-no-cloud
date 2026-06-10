@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Plus, Trash2, X } from "lucide-react";
+import { Check, Plus, Trash2, X, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Workout, Exercise } from "@/lib/workout-store";
@@ -12,9 +12,11 @@ type Props = {
   onCancel: () => void;
   planMode?: boolean;
   onReset?: () => void;
+  editingFinished?: boolean;
+  onDiscard?: () => void;
 };
 
-export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode, onReset }: Props) {
+export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode, onReset, editingFinished, onDiscard }: Props) {
   const [exerciseName, setExerciseName] = useState("");
 
   const addExercise = () => {
