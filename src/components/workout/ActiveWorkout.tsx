@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Plus, Trash2, X, ChevronLeft } from "lucide-react";
+import { Check, Plus, Trash2, X, ChevronLeft, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Workout, Exercise } from "@/lib/workout-store";
