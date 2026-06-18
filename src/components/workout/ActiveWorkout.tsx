@@ -18,6 +18,7 @@ type Props = {
 
 export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode, onReset, editingFinished, onDiscard }: Props) {
   const [exerciseName, setExerciseName] = useState("");
+  const [editingNameId, setEditingNameId] = useState<string | null>(null);
 
   const addExercise = () => {
     const name = exerciseName.trim();
