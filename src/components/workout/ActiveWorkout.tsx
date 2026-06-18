@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Plus, Trash2, X, ChevronLeft } from "lucide-react";
+import { Check, Plus, Trash2, X, ChevronLeft, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Workout, Exercise } from "@/lib/workout-store";
@@ -18,6 +18,7 @@ type Props = {
 
 export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode, onReset, editingFinished, onDiscard }: Props) {
   const [exerciseName, setExerciseName] = useState("");
+  const [editingNameId, setEditingNameId] = useState<string | null>(null);
 
   const addExercise = () => {
     const name = exerciseName.trim();
@@ -124,8 +125,27 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                     className="h-9 text-base font-semibold"
                     placeholder="Gyakorlat neve"
                   />
+                ) : editingNameId === ex.id ? (
+                  <Input
+                    autoFocus
+                    value={ex.name}
+                    onChange={(e) => updateExercise(ex.id, { name: e.target.value })}
+                    onBlur={() => setEditingNameId(null)}
+                    onKeyDown={(e) => e.key === "Enter" && setEditingNameId(null)}
+                    className="h-9 text-base font-semibold"
+                    placeholder="Gyakorlat neve"
+                  />
                 ) : (
-                  <h3 className="text-base font-semibold">{ex.name}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-semibold">{ex.name}</h3>
+                    <button
+                      onClick={() => setEditingNameId(ex.id)}
+                      className="rounded-md p-1 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      aria-label="Gyakorlat nevének szerkesztése"
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 )}
                 {planMode ? (
                   <Input
