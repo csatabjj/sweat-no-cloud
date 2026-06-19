@@ -14,9 +14,10 @@ type Props = {
   onReset?: () => void;
   editingFinished?: boolean;
   onDiscard?: () => void;
+  onSaveTemplate?: () => void;
 };
 
-export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode, onReset, editingFinished, onDiscard }: Props) {
+export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode, onReset, editingFinished, onDiscard, onSaveTemplate }: Props) {
   const [exerciseName, setExerciseName] = useState("");
   const [editingNameId, setEditingNameId] = useState<string | null>(null);
 
@@ -253,13 +254,21 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
             Visszaállítás alapértelmezettre
           </button>
         )}
+        {onSaveTemplate && !planMode && (
+          <button
+            onClick={onSaveTemplate}
+            className="mb-2 w-full rounded-xl border border-border py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition"
+          >
+            Sablon módosítása
+          </button>
+        )}
         <Button
           onClick={onFinish}
           disabled={workout.exercises.length === 0}
           className="h-14 w-full rounded-2xl text-base font-semibold"
           style={{ backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
         >
-          {planMode ? "Terv mentése" : editingFinished ? "Módosítások mentése" : "Edzés befejezése"}
+          {planMode ? "Sablon módosítása" : editingFinished ? "Módosítások mentése" : "Edzés befejezése"}
         </Button>
       </div>
     </div>
