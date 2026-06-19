@@ -13,8 +13,8 @@ export const TEMPLATES: WorkoutTemplate[] = [
   {
     id: "a",
     day: "Hétfő",
-    name: "A — Nehéz (erő)",
-    focus: "Squat cél ~85% / RPE 8",
+    name: "A — Közepes",
+    focus: "Közepes nap — Squat cél ~85% / RPE 8",
     exercises: [
       { name: "High bar squat", sets: 4, reps: "3-4", weight: "100/90", rpe: "6" },
       { name: "RDL", sets: 3, reps: "8", weight: "90", rpe: "7" },
@@ -30,8 +30,8 @@ export const TEMPLATES: WorkoutTemplate[] = [
   {
     id: "b",
     day: "Szerda",
-    name: "B — Hipertrófia",
-    focus: "Volumen — cél RPE 7–8",
+    name: "B — Nehéz",
+    focus: "Nehéz nap — cél RPE 8",
     exercises: [
       { name: "High bar squat", sets: 4, reps: "8", weight: "80", rpe: "6" },
       { name: "Nyomás egykezes / keret 30°", sets: 4, reps: "8", weight: "30/80", rpe: "8" },
@@ -47,8 +47,8 @@ export const TEMPLATES: WorkoutTemplate[] = [
   {
     id: "a2",
     day: "Péntek",
-    name: "A2 — Közepes (volumen-erő)",
-    focus: "Squat cél ~80% / RPE 8",
+    name: "A2 — Közepes",
+    focus: "Közepes nap — Squat cél ~80% / RPE 8",
     exercises: [
       { name: "High bar squat", sets: 4, reps: "5", weight: "87,5", rpe: "6" },
       { name: "RDL", sets: 2, reps: "8", weight: "90", rpe: "6" },
