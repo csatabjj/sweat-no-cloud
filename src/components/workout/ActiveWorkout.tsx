@@ -14,6 +14,7 @@ type Props = {
   onReset?: () => void;
   editingFinished?: boolean;
   onDiscard?: () => void;
+  onSaveTemplate?: () => void;
 };
 
 export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode, onReset, editingFinished, onDiscard }: Props) {
