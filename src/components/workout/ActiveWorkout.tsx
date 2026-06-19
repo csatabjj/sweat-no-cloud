@@ -17,7 +17,7 @@ type Props = {
   onSaveTemplate?: () => void;
 };
 
-export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode, onReset, editingFinished, onDiscard }: Props) {
+export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode, onReset, editingFinished, onDiscard, onSaveTemplate }: Props) {
   const [exerciseName, setExerciseName] = useState("");
   const [editingNameId, setEditingNameId] = useState<string | null>(null);
 
