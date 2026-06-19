@@ -54,6 +54,7 @@ function Index() {
   if (active && showActive) {
     const isExisting = workouts.some((w) => w.id === active.id);
     const isEditingFinished = isExisting && !!active.finishedAt;
+    const activeTemplate = TEMPLATES.find((t) => t.name === active.name);
     return (
       <ActiveWorkout
         workout={active}
@@ -83,6 +84,13 @@ function Index() {
           setActive(null);
           setShowActive(false);
         }}
+        onSaveTemplate={
+          activeTemplate
+            ? () => {
+                saveOverride(activeTemplate.id, active.exercises);
+              }
+            : undefined
+        }
       />
     );
   }
