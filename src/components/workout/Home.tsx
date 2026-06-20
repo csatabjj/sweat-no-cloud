@@ -85,18 +85,6 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
     URL.revokeObjectURL(url);
   }, [finished]);
 
-  const exportToJson = useCallback(() => {
-    const blob = new Blob([JSON.stringify(workouts, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `lifttrack_backup_${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }, [workouts]);
-
   return (
     <div className="min-h-screen pb-32">
       <header className="px-5 pb-6 pt-12">
@@ -166,16 +154,7 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
             </button>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={exportToJson}
-              disabled={workouts.length === 0}
-              className="flex items-center gap-1.5 rounded-lg bg-secondary/60 px-3 py-1.5 text-sm font-semibold text-muted-foreground transition active:scale-95 disabled:opacity-40"
-              title="Biztonsági mentés JSON"
-            >
-              <Download className="h-4 w-4" />
-              JSON
-            </button>
-            <button
+<button
               onClick={exportToCsv}
               disabled={finished.length === 0}
               className="flex items-center gap-1.5 rounded-lg bg-secondary/60 px-3 py-1.5 text-sm font-semibold text-muted-foreground transition active:scale-95 disabled:opacity-40"
