@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { Dumbbell, Flame, TrendingUp, Plus, Download, Play, X, Pencil } from "lucide-react";
+import { useState, useCallback, useRef } from "react";
+import { Dumbbell, Flame, TrendingUp, Plus, Download, Play, X, Pencil, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProgressView } from "./ProgressView";
 import type { Workout } from "@/lib/workout-store";
@@ -15,8 +15,10 @@ type Props = {
 
 const dayNames = ["V", "H", "K", "Sz", "Cs", "P", "Sz"];
 
-export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActive, onEditFinished }: Props) {
+export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActive, onEditFinished, onImport }: Props & { onImport: (w: Workout[]) => void }) {
   const [tab, setTab] = useState<"history" | "progress">("history");
+  const [importMsg, setImportMsg] = useState<string | null>(null);
+  const importRef = useRef<HTMLInputElement>(null);
   const finished = workouts.filter((w) => {
     if (!w.finishedAt) return false;
     const hasResult = w.exercises.some((e) => e.sets.some((s) => s.done && s.weight > 0));
@@ -84,6 +86,46 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }, [finished]);
+
+  const handleImport = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target?.result as string) as Workout[];
+        if (!Array.isArray(data)) throw new Error("Érvénytelen formátum");
+        const merged = [...workouts];
+        let added = 0;
+        for (const w of data) {
+          if (!merged.some((x) => x.id === w.id)) {
+            merged.push(w);
+            added++;
+          }
+        }
+        onImport(merged);
+        setImportMsg(`${added} edzés importálva`);
+        setTimeout(() => setImportMsg(null), 3000);
+      } catch {
+        setImportMsg("Hiba: érvénytelen fájl");
+        setTimeout(() => setImportMsg(null), 3000);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  }, [workouts, onImport]);
+
+  const exportToJson = useCallback(() => {
+    const blob = new Blob([JSON.stringify(workouts, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `lifttrack_backup_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, [workouts]);
 
   return (
     <div className="min-h-screen pb-32">
@@ -153,14 +195,36 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
               Fejlődés
             </button>
           </div>
-          <button
-            onClick={exportToCsv}
-            disabled={finished.length === 0}
-            className="flex items-center gap-1.5 rounded-lg bg-secondary/60 px-3 py-1.5 text-sm font-semibold text-muted-foreground transition active:scale-95 disabled:opacity-40"
-          >
-            <Download className="h-4 w-4" />
-            CSV
-          </button>
+          <div className="flex items-center gap-2">
+            {importMsg && (
+              <span className="text-xs font-medium text-primary">{importMsg}</span>
+            )}
+            <button
+              onClick={() => importRef.current?.click()}
+              className="flex items-center gap-1.5 rounded-lg bg-secondary/60 px-3 py-1.5 text-sm font-semibold text-muted-foreground transition active:scale-95"
+              title="Importálás JSON-ből"
+            >
+              <Upload className="h-4 w-4" />
+            </button>
+            <input ref={importRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
+            <button
+              onClick={exportToJson}
+              disabled={workouts.length === 0}
+              className="flex items-center gap-1.5 rounded-lg bg-secondary/60 px-3 py-1.5 text-sm font-semibold text-muted-foreground transition active:scale-95 disabled:opacity-40"
+              title="Biztonsági mentés JSON"
+            >
+              <Download className="h-4 w-4" />
+              JSON
+            </button>
+            <button
+              onClick={exportToCsv}
+              disabled={finished.length === 0}
+              className="flex items-center gap-1.5 rounded-lg bg-secondary/60 px-3 py-1.5 text-sm font-semibold text-muted-foreground transition active:scale-95 disabled:opacity-40"
+            >
+              <Download className="h-4 w-4" />
+              CSV
+            </button>
+          </div>
         </div>
         {tab === "history" ? (
           recent.length === 0 ? (
