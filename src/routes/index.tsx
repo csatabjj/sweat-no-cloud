@@ -92,7 +92,6 @@ function Index() {
           setActive(w);
           setShowActive(true);
         }}
-        onImport={save}
       />
       <TemplatePicker
         open={picking}
