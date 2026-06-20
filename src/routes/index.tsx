@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Home } from "@/components/workout/Home";
 import { ActiveWorkout } from "@/components/workout/ActiveWorkout";
 import { TemplatePicker } from "@/components/workout/TemplatePicker";
@@ -37,6 +38,8 @@ function Index() {
         onFinish={() => {
           saveOverride(planning.templateId, planning.workout.exercises);
           setPlanning(null);
+          setPicking(true);
+          toast.success("Sablon mentve");
         }}
       />
     );
@@ -73,6 +76,7 @@ function Index() {
           activeTemplate
             ? () => {
                 saveOverride(activeTemplate.id, active.exercises);
+                toast.success("Sablon mentve");
               }
             : undefined
         }
