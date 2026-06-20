@@ -257,7 +257,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
         {onSaveTemplate && !planMode && (
           <button
             onClick={onSaveTemplate}
-            className="mb-2 w-full rounded-xl border border-border py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition"
+            className="mb-2 w-full rounded-xl border border-emerald-500/30 bg-emerald-500/10 py-2.5 text-sm font-medium text-emerald-400 hover:bg-emerald-500/20 transition"
           >
             Sablon módosítása
           </button>
@@ -266,7 +266,11 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
           onClick={onFinish}
           disabled={workout.exercises.length === 0}
           className="h-14 w-full rounded-2xl text-base font-semibold"
-          style={{ backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
+          style={
+            planMode
+              ? { backgroundImage: "linear-gradient(135deg, oklch(0.65 0.15 145), oklch(0.72 0.13 160))", color: "oklch(0.10 0.02 145)", boxShadow: "0 8px 32px -8px oklch(0.65 0.15 145 / 0.40)" }
+              : { backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }
+          }
         >
           {planMode ? "Sablon módosítása" : editingFinished ? "Módosítások mentése" : "Edzés befejezése"}
         </Button>
