@@ -12,15 +12,6 @@ import {
 import { TEMPLATES } from "@/lib/workout-templates";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "LiftTrack — Edzésnapló" },
-      { name: "description", content: "Egyszerű edzésnapló iPhone-ra. Nincs felhő, nincs Google Drive — minden a telefonodon marad." },
-      { name: "theme-color", content: "#1a2030" },
-      { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
-    ],
-  }),
   component: Index,
 });
 
@@ -62,14 +53,8 @@ function Index() {
         onChange={setActive}
         onCancel={() => setShowActive(false)}
         onDiscard={() => {
-          if (isExisting) {
-            // editing existing: cancel without saving changes
-            setActive(null);
-            setShowActive(false);
-          } else {
-            setActive(null);
-            setShowActive(false);
-          }
+          setActive(null);
+          setShowActive(false);
         }}
         onFinish={() => {
           const finished = {
