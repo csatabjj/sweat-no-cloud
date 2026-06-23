@@ -1,0 +1,22 @@
+.firework-particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  animation-name: fw-burst;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+@keyframes fw-burst {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.9;
+  }
+  70% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(0.2);
+    opacity: 0;
+  }
+}

@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Home } from "@/components/workout/Home";
 import { ActiveWorkout } from "@/components/workout/ActiveWorkout";
 import { TemplatePicker } from "@/components/workout/TemplatePicker";
+import { Fireworks } from "@/components/workout/Fireworks";
 import {
   useWorkouts,
   useTemplateOverrides,
@@ -23,6 +24,7 @@ function Index() {
   const [showActive, setShowActive] = useState(false);
   const [picking, setPicking] = useState(false);
   const [planning, setPlanning] = useState<{ templateId: string; workout: Workout } | null>(null);
+  const [showFireworks, setShowFireworks] = useState(false);
 
   if (planning) {
     return (
@@ -68,6 +70,7 @@ function Index() {
             save(workouts.map((w) => (w.id === finished.id ? finished : w)));
           } else {
             save([...workouts, finished]);
+            setShowFireworks(true);
           }
           setActive(null);
           setShowActive(false);
@@ -115,6 +118,7 @@ function Index() {
           setPlanning({ templateId, workout: w });
         }}
       />
+      {showFireworks && <Fireworks onDone={() => setShowFireworks(false)} />}
     </>
   );
 }
