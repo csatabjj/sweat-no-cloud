@@ -11,25 +11,8 @@ export type WorkoutTemplate = {
 
 export const TEMPLATES: WorkoutTemplate[] = [
   {
-    id: "a",
-    day: "Hétfő",
-    name: "A — Közepes",
-    focus: "Közepes nap — Squat cél ~85% / RPE 8",
-    exercises: [
-      { name: "High bar squat", sets: 4, reps: "3-4", weight: "100/90", rpe: "6" },
-      { name: "RDL", sets: 3, reps: "8", weight: "90", rpe: "7" },
-      { name: "Fekvenyomás", sets: 4, reps: "4", weight: "90,85", rpe: "8" },
-      { name: "Melltámaszos evezés", sets: 4, reps: "8", weight: "130", rpe: "7" },
-      { name: "Tárogatás", sets: 2, reps: "8-10", weight: "95", rpe: "7" },
-      { name: "Tricepsz kötél", sets: 3, reps: "10-12", weight: "52", rpe: "7" },
-      { name: "Combfeszítő", sets: 2, reps: "12", weight: "95", rpe: "8" },
-      { name: "Oldalemelés gépen v csigán", sets: 2, reps: "10", weight: "14", rpe: "6" },
-      { name: "Pallof press", sets: 2, reps: "10/oldal" },
-    ],
-  },
-  {
     id: "b",
-    day: "Szerda",
+    day: "Hétfő",
     name: "B — Nehéz",
     focus: "Nehéz nap — cél RPE 8",
     exercises: [
@@ -42,6 +25,23 @@ export const TEMPLATES: WorkoutTemplate[] = [
       { name: "Bicepsz – Scott", sets: 3, reps: "10", rpe: "7", note: "szint 6,5" },
       { name: "Pallof press", sets: 2, reps: "10/oldal" },
       { name: "Bird dog", sets: 2, reps: "6/oldal" },
+    ],
+  },
+  {
+    id: "a",
+    day: "Szerda",
+    name: "A — Közepes",
+    focus: "Közepes nap — Squat cél ~85% / RPE 8",
+    exercises: [
+      { name: "High bar squat", sets: 4, reps: "3-4", weight: "100/90", rpe: "6" },
+      { name: "RDL", sets: 3, reps: "8", weight: "90", rpe: "7" },
+      { name: "Fekvenyomás", sets: 4, reps: "4", weight: "90,85", rpe: "8" },
+      { name: "Melltámaszos evezés", sets: 4, reps: "8", weight: "130", rpe: "7" },
+      { name: "Tárogatás", sets: 2, reps: "8-10", weight: "95", rpe: "7" },
+      { name: "Tricepsz kötél", sets: 3, reps: "10-12", weight: "52", rpe: "7" },
+      { name: "Combfeszítő", sets: 2, reps: "12", weight: "95", rpe: "8" },
+      { name: "Oldalemelés gépen v csigán", sets: 2, reps: "10", weight: "14", rpe: "6" },
+      { name: "Pallof press", sets: 2, reps: "10/oldal" },
     ],
   },
   {
@@ -141,8 +141,8 @@ export function getTemplateExercises(
 export function suggestedTemplateId(): string {
   // Mon=1, Wed=3, Fri=5, Sun=0
   const d = new Date().getDay();
-  if (d <= 1) return "a";
-  if (d <= 3) return "b";
+  if (d <= 1) return "b";
+  if (d <= 3) return "a";
   if (d <= 5) return "a2";
   return "b2";
 }
