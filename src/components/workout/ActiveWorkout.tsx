@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check, Plus, Trash2, X, ChevronLeft, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,9 +17,40 @@ type Props = {
   onSaveTemplate?: () => void;
 };
 
+// Controlled input that allows typing intermediate decimal values (e.g. "32.") without
+// resetting, and accepts comma as decimal separator (Hungarian locale).
+function WeightInput({ value, onChange, className }: { value: number; onChange: (v: number) => void; className?: string }) {
+  const [str, setStr] = useState(value === 0 ? "" : String(value));
+
+  useEffect(() => {
+    const parsed = parseFloat(str.replace(",", "."));
+    if (parsed !== value) {
+      setStr(value === 0 ? "" : String(value));
+    }
+  }, [value]);
+
+  return (
+    <Input
+      type="text"
+      inputMode="decimal"
+      value={str}
+      onChange={(e) => {
+        const raw = e.target.value;
+        setStr(raw);
+        const num = parseFloat(raw.replace(",", "."));
+        if (!isNaN(num)) onChange(num);
+        else if (raw === "") onChange(0);
+      }}
+      className={className}
+      placeholder="0"
+    />
+  );
+}
+
 export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode, onReset, editingFinished, onDiscard, onSaveTemplate }: Props) {
   const [exerciseName, setExerciseName] = useState("");
   const [editingNameId, setEditingNameId] = useState<string | null>(null);
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
 
   const addExercise = () => {
     const name = exerciseName.trim();
@@ -155,8 +186,27 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                     className="mt-1 h-8 text-xs"
                     placeholder="Megjegyzés (opcionális)"
                   />
+                ) : editingNoteId === ex.id ? (
+                  <Input
+                    autoFocus
+                    value={ex.note ?? ""}
+                    onChange={(e) => updateExercise(ex.id, { note: e.target.value })}
+                    onBlur={() => setEditingNoteId(null)}
+                    onKeyDown={(e) => e.key === "Enter" && setEditingNoteId(null)}
+                    className="mt-1 h-8 text-xs"
+                    placeholder="Megjegyzés (opcionális)"
+                  />
                 ) : (
-                  ex.note && <p className="mt-0.5 text-xs text-muted-foreground">{ex.note}</p>
+                  <div className="mt-0.5 flex items-center gap-1">
+                    <p className="text-xs text-muted-foreground">{ex.note || ""}</p>
+                    <button
+                      onClick={() => setEditingNoteId(ex.id)}
+                      className="rounded p-0.5 text-muted-foreground/40 hover:text-muted-foreground"
+                      aria-label="Megjegyzés szerkesztése"
+                    >
+                      <Pencil className="h-2.5 w-2.5" />
+                    </button>
+                  </div>
                 )}
               </div>
               <button onClick={() => removeExercise(ex.id)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary">
@@ -181,13 +231,10 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                   }`}
                 >
                   <span className="text-center text-sm font-semibold text-muted-foreground">{i + 1}</span>
-                  <Input
-                    type="number"
-                    inputMode="decimal"
-                    value={s.weight || ""}
-                    onChange={(e) => updateSet(ex, s.id, { weight: Number(e.target.value) || 0 })}
+                  <WeightInput
+                    value={s.weight}
+                    onChange={(v) => updateSet(ex, s.id, { weight: v })}
                     className="h-10 text-center"
-                    placeholder="0"
                   />
                   <Input
                     type="number"
