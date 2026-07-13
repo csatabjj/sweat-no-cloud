@@ -11,72 +11,67 @@ export type WorkoutTemplate = {
 
 export const TEMPLATES: WorkoutTemplate[] = [
   {
-    id: "b",
+    id: "pusha",
     day: "Hétfő",
-    name: "B — Nehéz",
-    focus: "Nehéz nap — cél RPE 8",
+    name: "Push A — mell + quad",
+    focus: "Mell + quad — cél RPE 6",
     exercises: [
-      { name: "High bar squat", sets: 4, reps: "8", weight: "80", rpe: "6" },
-      { name: "Nyomás egykezes / keret 30°", sets: 4, reps: "8", weight: "30/80", rpe: "8" },
-      { name: "Szűk lehúzás", sets: 4, reps: "8", weight: "70", rpe: "7" },
-      { name: "Combhajlítás ülve", sets: 2, reps: "15", rpe: "7", note: "gépszint 8" },
-      { name: "Rear delts kábel", sets: 2, reps: "10", weight: "20", rpe: "7" },
-      { name: "Oldalemelés gépen v csigán", sets: 2, reps: "10", weight: "14", rpe: "7" },
-      { name: "Bicepsz – Scott", sets: 3, reps: "10", rpe: "7", note: "szint 6,5" },
-      { name: "Pallof press", sets: 2, reps: "10/oldal" },
-      { name: "Bird dog", sets: 2, reps: "6/oldal" },
+      { name: "Guggolás (high-bar)", sets: 3, reps: "6-8", rpe: "6", note: "öv nélkül" },
+      { name: "Kézisúlyzós fekvenyomás", sets: 4, reps: "6-10" },
+      { name: "Gépes mellnyomás", sets: 3, reps: "8-12" },
+      { name: "Oldalemelés", sets: 3, reps: "12-20", note: "szuperszett a gépes mellnyomással" },
+      { name: "Tricepsz letolás", sets: 3, reps: "10-15" },
+      { name: "Hamstring stretch", sets: 2, reps: "30 mp/oldal", note: "záró" },
+      { name: "Reverse plank", sets: 2, reps: "30-45 mp", note: "záró" },
     ],
   },
   {
-    id: "a",
+    id: "pulla",
     day: "Szerda",
-    name: "A — Közepes",
-    focus: "Közepes nap — Squat cél ~85% / RPE 8",
+    name: "Pull A — nehéz RDL + vertikális húzás",
+    focus: "Nehéz RDL + vertikális húzás — RPE 7 max",
     exercises: [
-      { name: "High bar squat", sets: 4, reps: "3-4", weight: "100/90", rpe: "6" },
-      { name: "RDL", sets: 3, reps: "8", weight: "90", rpe: "7" },
-      { name: "Fekvenyomás", sets: 4, reps: "4", weight: "90,85", rpe: "8" },
-      { name: "Melltámaszos evezés", sets: 4, reps: "8", weight: "130", rpe: "7" },
-      { name: "Tárogatás", sets: 2, reps: "8-10", weight: "95", rpe: "7" },
-      { name: "Tricepsz kötél", sets: 3, reps: "10-12", weight: "52", rpe: "7" },
-      { name: "Combfeszítő", sets: 2, reps: "12", weight: "95", rpe: "8" },
-      { name: "Oldalemelés gépen v csigán", sets: 2, reps: "10", weight: "14", rpe: "6" },
-      { name: "Pallof press", sets: 2, reps: "10/oldal" },
+      { name: "RDL", sets: 3, reps: "6-8", rpe: "7", note: "max, öv nélkül" },
+      { name: "Húzódzkodás / lat pulldown", sets: 4, reps: "6-10" },
+      { name: "Chest-supported row", sets: 3, reps: "8-12" },
+      { name: "Bicepsz gép", sets: 3, reps: "8-12" },
+      { name: "Face pull", sets: 3, reps: "12-15", note: "hátsó delta #1, szuperszett a bicepsszel" },
+      { name: "Pallof press", sets: 2, reps: "10-12/oldal" },
+      { name: "Hamstring stretch", sets: 2, reps: "30 mp/oldal", note: "záró" },
+      { name: "Reverse plank", sets: 2, reps: "30-45 mp", note: "záró" },
     ],
   },
   {
-    id: "a2",
+    id: "pushb",
     day: "Péntek",
-    name: "A2 — Közepes",
-    focus: "Közepes nap — Squat cél ~80% / RPE 8",
+    name: "Push B — váll + quad",
+    focus: "Váll + quad — cél RPE 6",
     exercises: [
-      { name: "High bar squat", sets: 4, reps: "5", weight: "87,5", rpe: "6" },
-      { name: "RDL", sets: 2, reps: "8", weight: "90", rpe: "6" },
-      { name: "Fekvenyomás", sets: 4, reps: "5", weight: "85/80", rpe: "7" },
-      { name: "Melltámaszos evezés", sets: 4, reps: "8", weight: "130", rpe: "7" },
-      { name: "Tárogatás", sets: 2, reps: "8-10", weight: "95", rpe: "7" },
-      { name: "Tricepsz letolás", sets: 3, reps: "8", weight: "70", rpe: "7" },
-      { name: "Oldalemelés gépen v csigán", sets: 2, reps: "10", weight: "14", rpe: "7", note: "csigán" },
-      { name: "Pallof press", sets: 2, reps: "10/oldal", note: "csigán" },
-      { name: "McGill curl-up", sets: 2, reps: "8" },
+      { name: "Guggolás pause", sets: 3, reps: "8-10", rpe: "6" },
+      { name: "Ülő vállnyomás (kézisúlyzó)", sets: 4, reps: "6-10" },
+      { name: "Pec deck / kábeles tárogatás", sets: 3, reps: "10-15" },
+      { name: "Oldalemelés", sets: 3, reps: "12-20" },
+      { name: "Overhead tricepsz (kábel)", sets: 3, reps: "10-12", note: "szuperszett a vádlival" },
+      { name: "Álló vádli", sets: 3, reps: "10-15" },
+      { name: "Hamstring stretch", sets: 2, reps: "30 mp/oldal", note: "záró" },
+      { name: "Reverse plank", sets: 2, reps: "30-45 mp", note: "záró" },
     ],
   },
   {
-    id: "b2",
+    id: "pullb",
     day: "Vasárnap",
-    name: "B2 — Hipertrófia",
-    focus: "Volumen — cél RPE 7–8",
+    name: "Pull B — könnyű RDL + horizontális húzás",
+    focus: "Könnyű RDL + horizontális húzás — RPE 6–7",
     exercises: [
-      { name: "High bar squat", sets: 6, reps: "3", weight: "80", rpe: "6" },
-      { name: "Nyomás egykezes / keret 30°", sets: 4, reps: "8-10", weight: "27,5/70", rpe: "8" },
-      { name: "Szűk lehúzás", sets: 4, reps: "6-8", weight: "79", rpe: "8" },
-      { name: "Combhajlítás ülve", sets: 2, reps: "15", rpe: "7", note: "gépszint 8" },
-      { name: "Reverse pec", sets: 3, reps: "12", rpe: "7", note: "szint 6" },
-      { name: "Oldalemelés gépen v csigán", sets: 2, reps: "10-12", weight: "14", rpe: "7" },
-      { name: "Bicepsz kalapács", sets: 3, reps: "10-12", weight: "17,5", rpe: "7", note: "szint 7/8" },
-      { name: "Combfeszítő", sets: 2, reps: "12", weight: "95", rpe: "8" },
-      { name: "Dead bug", sets: 2, reps: "8/oldal", rpe: "7" },
-      { name: "McGill curl-up", sets: 2, reps: "20 mp/oldal" },
+      { name: "RDL", sets: 3, reps: "10-12", rpe: "6-7" },
+      { name: "T-bar / chest-supported row", sets: 4, reps: "8-12" },
+      { name: "Lat pulldown semleges fogással", sets: 3, reps: "8-12" },
+      { name: "Ülő combhajlítás", sets: 3, reps: "10-15" },
+      { name: "Reverse pec deck", sets: 3, reps: "12-15", note: "hátsó delta #2, szuperszett az incline bicepsszel" },
+      { name: "Incline kézisúlyzós bicepsz", sets: 3, reps: "8-12" },
+      { name: "Pallof press", sets: 2, reps: "10-12/oldal" },
+      { name: "Hamstring stretch", sets: 2, reps: "30 mp/oldal", note: "záró" },
+      { name: "Reverse plank", sets: 2, reps: "30-45 mp", note: "záró" },
     ],
   },
 ];
@@ -141,10 +136,10 @@ export function getTemplateExercises(
 export function suggestedTemplateId(): string {
   // Mon=1, Wed=3, Fri=5, Sun=0
   const d = new Date().getDay();
-  if (d <= 1) return "b";
-  if (d <= 3) return "a";
-  if (d <= 5) return "a2";
-  return "b2";
+  if (d <= 1) return "pusha";
+  if (d <= 3) return "pulla";
+  if (d <= 5) return "pushb";
+  return "pullb";
 }
 
 /**
