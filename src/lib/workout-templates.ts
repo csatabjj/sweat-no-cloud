@@ -48,11 +48,11 @@ export const TEMPLATES: WorkoutTemplate[] = [
     focus: "Váll + quad — cél RPE 6",
     exercises: [
       { name: "Guggolás pause", sets: 3, reps: "8-10", rpe: "6" },
+      { name: "Gépi mellnyomás", sets: 3, reps: "8-12" },
       { name: "Ülő vállnyomás (kézisúlyzó)", sets: 4, reps: "6-10" },
       { name: "Pec deck / kábeles tárogatás", sets: 3, reps: "10-15" },
       { name: "Oldalemelés", sets: 3, reps: "12-20" },
-      { name: "Overhead tricepsz (kábel)", sets: 3, reps: "10-12", note: "szuperszett a vádlival" },
-      { name: "Álló vádli", sets: 3, reps: "10-15" },
+      { name: "Overhead tricepsz (kábel)", sets: 3, reps: "10-12" },
       { name: "Hamstring stretch", sets: 2, reps: "30 mp/oldal", note: "záró" },
       { name: "Reverse plank", sets: 2, reps: "30-45 mp", note: "záró" },
     ],
