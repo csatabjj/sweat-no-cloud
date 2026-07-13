@@ -42,7 +42,7 @@ export const TEMPLATES: WorkoutTemplate[] = [
     ],
   },
   {
-    id: "pushb",
+    id: "pushb2",
     day: "Péntek",
     name: "Push B — váll + quad",
     focus: "Váll + quad — cél RPE 6",
@@ -138,7 +138,7 @@ export function suggestedTemplateId(): string {
   const d = new Date().getDay();
   if (d <= 1) return "pusha";
   if (d <= 3) return "pulla";
-  if (d <= 5) return "pushb";
+  if (d <= 5) return "pushb2";
   return "pullb";
 }
 
