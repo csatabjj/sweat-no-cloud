@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Check, Plus, Trash2, X, ChevronLeft, Pencil } from "lucide-react";
+import { Check, Plus, Trash2, X, ChevronLeft, ChevronUp, ChevronDown, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Workout, Exercise } from "@/lib/workout-store";
@@ -75,6 +75,14 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
     onChange({ ...workout, exercises: workout.exercises.filter((e) => e.id !== id) });
   };
 
+  const moveExercise = (index: number, direction: -1 | 1) => {
+    const target = index + direction;
+    if (target < 0 || target >= workout.exercises.length) return;
+    const next = [...workout.exercises];
+    [next[index], next[target]] = [next[target], next[index]];
+    onChange({ ...workout, exercises: next });
+  };
+
   const addSet = (ex: Exercise) => {
     const last = ex.sets[ex.sets.length - 1];
     updateExercise(ex.id, {
@@ -146,7 +154,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
       </header>
 
       <main className="flex-1 space-y-4 px-5 pt-5">
-        {workout.exercises.map((ex) => (
+        {workout.exercises.map((ex, exIndex) => (
           <section key={ex.id} className="rounded-2xl bg-card p-4 shadow-sm">
             <div className="mb-3 flex items-start justify-between gap-2">
               <div className="min-w-0 flex-1">
@@ -209,9 +217,29 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                   </div>
                 )}
               </div>
-              <button onClick={() => removeExercise(ex.id)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary">
-                <Trash2 className="h-4 w-4" />
-              </button>
+              <div className="flex shrink-0 items-center gap-1">
+                <div className="flex flex-col">
+                  <button
+                    onClick={() => moveExercise(exIndex, -1)}
+                    disabled={exIndex === 0}
+                    className="flex h-5 w-6 items-center justify-center rounded-t-md text-muted-foreground hover:bg-secondary disabled:opacity-20"
+                    aria-label="Feljebb"
+                  >
+                    <ChevronUp className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    onClick={() => moveExercise(exIndex, 1)}
+                    disabled={exIndex === workout.exercises.length - 1}
+                    className="flex h-5 w-6 items-center justify-center rounded-b-md text-muted-foreground hover:bg-secondary disabled:opacity-20"
+                    aria-label="Lejjebb"
+                  >
+                    <ChevronDown className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+                <button onClick={() => removeExercise(ex.id)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
             </div>
 
             <div className="mb-2 grid grid-cols-[24px_1fr_1fr_40px_32px] gap-2 px-1 text-[10px] uppercase tracking-wider text-muted-foreground">
