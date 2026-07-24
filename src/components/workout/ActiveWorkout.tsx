@@ -217,23 +217,23 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                   </div>
                 )}
               </div>
-              <div className="flex shrink-0 items-center gap-1">
-                <div className="flex flex-col">
+              <div className="flex shrink-0 items-center gap-1.5">
+                <div className="flex flex-col gap-0.5 rounded-lg bg-secondary/70 p-0.5">
                   <button
                     onClick={() => moveExercise(exIndex, -1)}
                     disabled={exIndex === 0}
-                    className="flex h-5 w-6 items-center justify-center rounded-t-md text-muted-foreground hover:bg-secondary disabled:opacity-20"
+                    className="flex h-7 w-8 items-center justify-center rounded-md text-foreground hover:bg-secondary disabled:opacity-25"
                     aria-label="Feljebb"
                   >
-                    <ChevronUp className="h-3.5 w-3.5" />
+                    <ChevronUp className="h-5 w-5" />
                   </button>
                   <button
                     onClick={() => moveExercise(exIndex, 1)}
                     disabled={exIndex === workout.exercises.length - 1}
-                    className="flex h-5 w-6 items-center justify-center rounded-b-md text-muted-foreground hover:bg-secondary disabled:opacity-20"
+                    className="flex h-7 w-8 items-center justify-center rounded-md text-foreground hover:bg-secondary disabled:opacity-25"
                     aria-label="Lejjebb"
                   >
-                    <ChevronDown className="h-3.5 w-3.5" />
+                    <ChevronDown className="h-5 w-5" />
                   </button>
                 </div>
                 <button onClick={() => removeExercise(ex.id)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary">
