@@ -332,7 +332,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
         {onSaveTemplate && !planMode && (
           <button
             onClick={onSaveTemplate}
-            className="mb-2 w-full rounded-xl border border-emerald-500/30 bg-emerald-500/10 py-2.5 text-sm font-medium text-emerald-400 hover:bg-emerald-500/20 transition"
+            className="mb-2 w-full rounded-xl border border-emerald-600/30 bg-emerald-500/15 py-2.5 text-sm font-medium text-emerald-700 hover:bg-emerald-500/25 transition"
           >
             Sablon módosítása
           </button>
