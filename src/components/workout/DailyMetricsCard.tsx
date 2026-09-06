@@ -8,10 +8,12 @@ type Props = {
 };
 
 export function DailyMetricsCard({ value, onChange }: Props) {
+  const dateLabel = new Date().toLocaleDateString("hu-HU", { month: "short", day: "numeric" });
   return (
     <section className="rounded-2xl border border-sky-300 bg-sky-100 p-4">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-sky-700">
-        Napi mérések
+      <p className="mb-3 flex items-center justify-between text-xs font-semibold uppercase tracking-widest text-sky-700">
+        <span>Napi mérések</span>
+        <span className="normal-case tracking-normal text-sky-600/80">ma · {dateLabel}</span>
       </p>
       <div className="grid grid-cols-3 gap-2">
         <div>
