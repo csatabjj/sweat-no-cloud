@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Home } from "@/components/workout/Home";
 import { ActiveWorkout } from "@/components/workout/ActiveWorkout";
@@ -12,19 +12,42 @@ import {
   type Workout,
 } from "@/lib/workout-store";
 import { TEMPLATES } from "@/lib/workout-templates";
+import { useDailyMetrics, dateKey, type DailyMetrics } from "@/lib/daily-metrics";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
+// Bridge for the Apple Shortcuts flow: a Shortcut reads today's HRV/steps/weight
+// from Health and opens ?hrv=..&steps=..&weight=.. to save them without typing.
+function useHealthMetricsBridge(saveMetric: (date: string, patch: DailyMetrics) => void) {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const hrv = params.get("hrv");
+    const steps = params.get("steps");
+    const weight = params.get("weight");
+    if (!hrv && !steps && !weight) return;
+    const patch: DailyMetrics = {};
+    if (hrv) patch.hrv = parseFloat(hrv.replace(",", "."));
+    if (steps) patch.steps = parseFloat(steps.replace(",", "."));
+    if (weight) patch.weight = parseFloat(weight.replace(",", "."));
+    saveMetric(dateKey(), patch);
+    window.history.replaceState({}, "", window.location.pathname);
+    toast.success("Napi mérés mentve (Health)");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+}
+
 function Index() {
   const { workouts, save } = useWorkouts();
   const { overrides, saveOverride, resetOverride } = useTemplateOverrides();
+  const { saveMetric } = useDailyMetrics();
   const [active, setActive] = useState<Workout | null>(null);
   const [showActive, setShowActive] = useState(false);
   const [picking, setPicking] = useState(false);
   const [planning, setPlanning] = useState<{ templateId: string; workout: Workout } | null>(null);
   const [showFireworks, setShowFireworks] = useState(false);
+  useHealthMetricsBridge(saveMetric);
 
   if (planning) {
     return (

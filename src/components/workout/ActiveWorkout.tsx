@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Check, Plus, Trash2, X, ChevronLeft, ChevronUp, ChevronDown, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DecimalInput } from "./DecimalInput";
+import { DailyMetricsCard } from "./DailyMetricsCard";
 import type { Workout, Exercise } from "@/lib/workout-store";
 import { uid } from "@/lib/workout-store";
+import { useDailyMetrics, dateKey } from "@/lib/daily-metrics";
 
 type Props = {
   workout: Workout;
@@ -17,40 +20,12 @@ type Props = {
   onSaveTemplate?: () => void;
 };
 
-// Controlled input that allows typing intermediate decimal values (e.g. "32.") without
-// resetting, and accepts comma as decimal separator (Hungarian locale).
-function WeightInput({ value, onChange, className }: { value: number; onChange: (v: number) => void; className?: string }) {
-  const [str, setStr] = useState(value === 0 ? "" : String(value));
-
-  useEffect(() => {
-    const parsed = parseFloat(str.replace(",", "."));
-    if (parsed !== value) {
-      setStr(value === 0 ? "" : String(value));
-    }
-  }, [value]);
-
-  return (
-    <Input
-      type="text"
-      inputMode="decimal"
-      value={str}
-      onChange={(e) => {
-        const raw = e.target.value;
-        setStr(raw);
-        const num = parseFloat(raw.replace(",", "."));
-        if (!isNaN(num)) onChange(num);
-        else if (raw === "") onChange(0);
-      }}
-      className={className}
-      placeholder="0"
-    />
-  );
-}
-
 export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode, onReset, editingFinished, onDiscard, onSaveTemplate }: Props) {
   const [exerciseName, setExerciseName] = useState("");
   const [editingNameId, setEditingNameId] = useState<string | null>(null);
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const { metrics, saveMetric } = useDailyMetrics();
+  const today = dateKey();
 
   const addExercise = () => {
     const name = exerciseName.trim();
@@ -259,7 +234,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                   }`}
                 >
                   <span className="text-center text-sm font-semibold text-muted-foreground">{i + 1}</span>
-                  <WeightInput
+                  <DecimalInput
                     value={s.weight}
                     onChange={(v) => updateSet(ex, s.id, { weight: v })}
                     className="h-10 text-center"
@@ -318,6 +293,10 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
             </Button>
           </div>
         </section>
+
+        {!planMode && !editingFinished && (
+          <DailyMetricsCard value={metrics[today] ?? {}} onChange={(patch) => saveMetric(today, patch)} />
+        )}
       </main>
 
       <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background/95 px-5 pb-8 pt-4 backdrop-blur-xl">

@@ -2,7 +2,9 @@ import { useState, useCallback } from "react";
 import { Dumbbell, Flame, TrendingUp, Plus, Download, Play, X, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProgressView } from "./ProgressView";
+import { DailyMetricsCard } from "./DailyMetricsCard";
 import type { Workout } from "@/lib/workout-store";
+import { useDailyMetrics, dateKey } from "@/lib/daily-metrics";
 
 type Props = {
   workouts: Workout[];
@@ -17,6 +19,8 @@ const dayNames = ["V", "H", "K", "Sz", "Cs", "P", "Sz"];
 
 export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActive, onEditFinished }: Props) {
   const [tab, setTab] = useState<"history" | "progress">("history");
+  const { metrics, saveMetric } = useDailyMetrics();
+  const today = dateKey();
   const finished = workouts.filter((w) => {
     if (!w.finishedAt) return false;
     const hasResult = w.exercises.some((e) => e.sets.some((s) => s.done && s.weight > 0));
@@ -85,6 +89,26 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
     URL.revokeObjectURL(url);
   }, [finished]);
 
+  const exportMetricsToCsv = useCallback(() => {
+    const dates = Object.keys(metrics).sort();
+    if (dates.length === 0) return;
+    const rows: string[][] = [["Datum", "HRV", "Testsuly (kg)", "Lepes"]];
+    for (const date of dates) {
+      const m = metrics[date];
+      rows.push([date, m.hrv ? String(m.hrv) : "", m.weight ? String(m.weight) : "", m.steps ? String(m.steps) : ""]);
+    }
+    const csv = rows.map((r) => r.map((c) => '"' + c.replace(/"/g, '""') + '"').join(";")).join("\n");
+    const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `napi_meresek_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, [metrics]);
+
   return (
     <div className="min-h-screen pb-32">
       <header className="px-5 pb-6 pt-12">
@@ -133,6 +157,10 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
         </div>
       </section>
 
+      <section className="px-5 pt-4">
+        <DailyMetricsCard value={metrics[today] ?? {}} onChange={(patch) => saveMetric(today, patch)} />
+      </section>
+
       <section className="px-5 pt-8">
         <div className="mb-3 flex items-center justify-between">
           <div className="flex gap-1 rounded-xl bg-secondary/60 p-1">
@@ -154,13 +182,21 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
             </button>
           </div>
           <div className="flex items-center gap-2">
-<button
+            <button
               onClick={exportToCsv}
               disabled={finished.length === 0}
               className="flex items-center gap-1.5 rounded-lg bg-secondary/60 px-3 py-1.5 text-sm font-semibold text-muted-foreground transition active:scale-95 disabled:opacity-40"
             >
               <Download className="h-4 w-4" />
               CSV
+            </button>
+            <button
+              onClick={exportMetricsToCsv}
+              disabled={Object.keys(metrics).length === 0}
+              className="flex items-center gap-1.5 rounded-lg bg-secondary/60 px-3 py-1.5 text-sm font-semibold text-muted-foreground transition active:scale-95 disabled:opacity-40"
+            >
+              <Download className="h-4 w-4" />
+              Mérések
             </button>
           </div>
         </div>
