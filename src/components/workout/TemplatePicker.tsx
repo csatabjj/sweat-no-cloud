@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Dumbbell, X, TrendingUp, Pencil, Sparkles } from "lucide-react";
+import { Dumbbell, X, TrendingUp, Pencil, Sparkles, Share2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   TEMPLATES,
@@ -8,6 +9,7 @@ import {
   cloneExercisesFresh,
   findLastWorkoutForTemplate,
   applyPreviousWorkout,
+  buildPlanText,
 } from "@/lib/workout-templates";
 import { newWorkout, type Workout, type Exercise, type TemplateOverrides } from "@/lib/workout-store";
 
@@ -42,15 +44,42 @@ export function TemplatePicker({ open, onClose, onPick, onEdit, workouts, overri
     onEdit(id, exercises);
   };
 
+  const sharePlan = async () => {
+    const text = buildPlanText(overrides);
+    if (navigator.share) {
+      try {
+        await navigator.share({ text, title: "LiftTrack edzésterv" });
+      } catch {
+        // user cancelled the share sheet, nothing to do
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Terv a vágólapra másolva");
+    } catch {
+      toast.error("Nem sikerült másolni");
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm">
       <div className="w-full max-w-md rounded-t-3xl bg-card pb-8 pt-2 shadow-2xl animate-in slide-in-from-bottom duration-300">
         <div className="mx-auto h-1.5 w-12 rounded-full bg-border" />
         <div className="flex items-center justify-between px-5 pb-2 pt-4">
           <h2 className="text-lg font-bold">Válassz napot</h2>
-          <button onClick={onClose} className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary">
-            <X className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={sharePlan}
+              className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary"
+              aria-label="Terv exportálása"
+            >
+              <Share2 className="h-5 w-5" />
+            </button>
+            <button onClick={onClose} className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
         <div className="space-y-2 px-5 pt-2">

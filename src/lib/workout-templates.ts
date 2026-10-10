@@ -135,6 +135,44 @@ export function getTemplateExercises(
   return templateToExercises(t);
 }
 
+/**
+ * Format a set list as compact text: "3×8 @ 50kg", or per-set if they differ.
+ */
+function formatSets(sets: { weight: number; reps: number }[]): string {
+  if (sets.length === 0) return "–";
+  const allSame = sets.every((s) => s.reps === sets[0].reps && s.weight === sets[0].weight);
+  if (allSame) {
+    const { reps, weight } = sets[0];
+    return weight > 0 ? `${sets.length}×${reps} @ ${weight}kg` : `${sets.length}×${reps}`;
+  }
+  return sets.map((s) => (s.weight > 0 ? `${s.reps}@${s.weight}kg` : `${s.reps}`)).join(", ");
+}
+
+/**
+ * Build a plain-text summary of all templates, applying any saved overrides,
+ * so the current plan (including on-device customizations) can be copied/shared.
+ */
+export function buildPlanText(overrides: Record<string, Exercise[]>): string {
+  const lines: string[] = ["LiftTrack — jelenlegi edzésterv", ""];
+  for (const t of TEMPLATES) {
+    const override = overrides[t.id];
+    lines.push(`${t.day} — ${t.name}${override ? " (egyéni mentett verzió)" : ""}`);
+    if (override && override.length > 0) {
+      for (const e of override) {
+        lines.push(`- ${e.name}: ${formatSets(e.sets)}${e.note ? ` — ${e.note}` : ""}`);
+      }
+    } else {
+      for (const e of t.exercises) {
+        const parts = [`${e.sets}×${e.reps}`];
+        if (e.rpe) parts.push(`RPE ${e.rpe}`);
+        lines.push(`- ${e.name}: ${parts.join(", ")}${e.note ? ` — ${e.note}` : ""}`);
+      }
+    }
+    lines.push("");
+  }
+  return lines.join("\n");
+}
+
 export function suggestedTemplateId(): string {
   // Mon=1, Wed=3, Fri=5, Sun=0
   const d = new Date().getDay();
