@@ -6,7 +6,17 @@ export type WorkoutTemplate = {
   day: string;
   name: string;
   focus: string;
-  exercises: { name: string; sets: number; reps: string; weight?: string; rpe?: string; note?: string }[];
+  exercises: {
+    name: string;
+    sets: number;
+    reps: string;
+    weight?: string;
+    rpe?: string;
+    note?: string;
+    // Per-set reps/weight, for exercises that ramp (e.g. pyramid sets).
+    // When present, this takes priority over sets/reps/weight above.
+    setDetails?: { reps: number; weight: number }[];
+  }[];
 };
 
 export const TEMPLATES: WorkoutTemplate[] = [
@@ -14,66 +24,156 @@ export const TEMPLATES: WorkoutTemplate[] = [
     id: "pusha",
     day: "Hétfő",
     name: "Push A — mell + quad",
-    focus: "Mell + quad — cél RPE 6",
+    focus: "Mell + quad",
     exercises: [
-      { name: "Guggolás (high-bar)", sets: 3, reps: "6-8", rpe: "6", note: "öv nélkül" },
-      { name: "Kézisúlyzós fekvenyomás", sets: 4, reps: "6-10" },
-      { name: "Gépes mellnyomás", sets: 3, reps: "8-12" },
-      { name: "Oldalemelés", sets: 3, reps: "12-20", note: "szuperszett a gépes mellnyomással" },
-      { name: "Tricepsz letolás", sets: 4, reps: "10-15" },
-      { name: "Leg extension", sets: 3, reps: "12-15", note: "szuperszett a tricepsz letolással" },
-      { name: "Hamstring stretch", sets: 2, reps: "30 mp/oldal", note: "záró" },
-      { name: "Reverse plank", sets: 2, reps: "30-45 mp", note: "záró" },
+      { name: "Lábtoló gép", sets: 5, reps: "10", weight: "160", note: "öv nélkül" },
+      {
+        name: "Gépes mellnyomás",
+        sets: 5,
+        reps: "8-10",
+        setDetails: [
+          { reps: 10, weight: 85 },
+          { reps: 10, weight: 85 },
+          { reps: 8, weight: 100 },
+          { reps: 8, weight: 100 },
+          { reps: 8, weight: 100 },
+        ],
+      },
+      { name: "Oldalemelés kábel", sets: 4, reps: "12", weight: "12.5", note: "szuperszett a gépes mellnyomással" },
+      { name: "30 fokos nyomás gépen", sets: 4, reps: "8", weight: "80" },
+      {
+        name: "Tricepsz letolás",
+        sets: 5,
+        reps: "6-10",
+        setDetails: [
+          { reps: 10, weight: 61 },
+          { reps: 10, weight: 61 },
+          { reps: 10, weight: 61 },
+          { reps: 6, weight: 61 },
+          { reps: 6, weight: 61 },
+        ],
+      },
+      { name: "Leg extensions", sets: 4, reps: "12", weight: "85" },
     ],
   },
   {
     id: "pulla",
     day: "Szerda",
     name: "Pull A — nehéz RDL + vertikális húzás",
-    focus: "Nehéz RDL + vertikális húzás — RPE 7 max",
+    focus: "Nehéz RDL + vertikális húzás",
     exercises: [
-      { name: "RDL", sets: 3, reps: "6-8", rpe: "7", note: "max, öv nélkül" },
-      { name: "Húzódzkodás / lat pulldown", sets: 4, reps: "6-10" },
-      { name: "Chest-supported row", sets: 3, reps: "8-12" },
-      { name: "Bicepsz gép", sets: 4, reps: "8-12" },
-      { name: "Face pull", sets: 3, reps: "12-15", note: "hátsó delta #1, szuperszett a bicepsszel" },
-      { name: "Pallof press", sets: 2, reps: "10-12/oldal" },
-      { name: "Hamstring stretch", sets: 2, reps: "30 mp/oldal", note: "záró" },
-      { name: "Reverse plank", sets: 2, reps: "30-45 mp", note: "záró" },
+      {
+        name: "RDL",
+        sets: 4,
+        reps: "8-10",
+        setDetails: [
+          { reps: 10, weight: 80 },
+          { reps: 10, weight: 80 },
+          { reps: 8, weight: 90 },
+          { reps: 8, weight: 90 },
+        ],
+        note: "max, öv nélkül",
+      },
+      { name: "Lat pulldown", sets: 5, reps: "8", weight: "61" },
+      { name: "Chest-supported row / T-Rúd", sets: 5, reps: "10", weight: "115" },
+      { name: "Lábhajlítás ülve", sets: 5, reps: "12", weight: "7", note: "7" },
+      {
+        name: "Bicepsz gép Scott vs Cable",
+        sets: 5,
+        reps: "8-12",
+        setDetails: [
+          { reps: 12, weight: 5 },
+          { reps: 12, weight: 5 },
+          { reps: 10, weight: 5 },
+          { reps: 10, weight: 5 },
+          { reps: 8, weight: 5 },
+        ],
+      },
+      { name: "Egykezes evezés csiga/dumbell", sets: 5, reps: "10", weight: "34", note: "hátsó delta #1, szuperszett a bicepsszel" },
     ],
   },
   {
     id: "pushb2",
     day: "Péntek",
     name: "Push B — váll + quad",
-    focus: "Váll + quad — cél RPE 6",
+    focus: "Váll + quad",
     exercises: [
-      { name: "Guggolás pause", sets: 3, reps: "8-10", rpe: "6" },
-      { name: "Gépi mellnyomás", sets: 3, reps: "8-12" },
-      { name: "Ülő vállnyomás (kézisúlyzó)", sets: 4, reps: "6-10" },
-      { name: "Pec deck / kábeles tárogatás", sets: 3, reps: "10-15" },
-      { name: "Oldalemelés", sets: 3, reps: "12-20" },
-      { name: "Overhead tricepsz (kábel)", sets: 4, reps: "10-12" },
-      { name: "Leg extension", sets: 3, reps: "12-15", note: "szuperszett az overhead tricepsszel" },
-      { name: "Hamstring stretch", sets: 2, reps: "30 mp/oldal", note: "záró" },
-      { name: "Reverse plank", sets: 2, reps: "30-45 mp", note: "záró" },
+      {
+        name: "Hack Guggolás",
+        sets: 5,
+        reps: "8-10",
+        setDetails: [
+          { reps: 10, weight: 60 },
+          { reps: 10, weight: 60 },
+          { reps: 8, weight: 70 },
+          { reps: 8, weight: 70 },
+          { reps: 8, weight: 70 },
+        ],
+      },
+      { name: "Shrugs", sets: 3, reps: "10", weight: "100" },
+      { name: "Mellnyomás 30 fok keret", sets: 5, reps: "10", weight: "60" },
+      { name: "Oldalemelés kábel", sets: 4, reps: "12", weight: "12.5" },
+      { name: "Pec deck / kábeles tárogatás", sets: 5, reps: "10", weight: "65" },
+      { name: "Leg extensions", sets: 4, reps: "12", weight: "85" },
+      { name: "Overhead tricepsz (kábel)", sets: 5, reps: "10", weight: "43" },
     ],
   },
   {
     id: "pullb",
     day: "Vasárnap",
     name: "Pull B — könnyű RDL + horizontális húzás",
-    focus: "Könnyű RDL + horizontális húzás — RPE 6–7",
+    focus: "Könnyű RDL + horizontális húzás",
     exercises: [
-      { name: "RDL", sets: 3, reps: "10-12", rpe: "6-7" },
-      { name: "T-bar / chest-supported row", sets: 4, reps: "8-12" },
-      { name: "Lat pulldown semleges fogással", sets: 3, reps: "8-12" },
-      { name: "Ülő combhajlítás", sets: 3, reps: "10-15" },
-      { name: "Reverse pec deck", sets: 3, reps: "12-15", note: "hátsó delta #2, szuperszett az incline bicepsszel" },
-      { name: "Incline kézisúlyzós bicepsz", sets: 4, reps: "8-12" },
-      { name: "Pallof press", sets: 2, reps: "10-12/oldal" },
-      { name: "Hamstring stretch", sets: 2, reps: "30 mp/oldal", note: "záró" },
-      { name: "Reverse plank", sets: 2, reps: "30-45 mp", note: "záró" },
+      {
+        name: "RDL",
+        sets: 4,
+        reps: "8-10",
+        setDetails: [
+          { reps: 10, weight: 80 },
+          { reps: 10, weight: 80 },
+          { reps: 8, weight: 90 },
+          { reps: 8, weight: 90 },
+        ],
+      },
+      {
+        name: "Lat pulldown wide and narrow",
+        sets: 5,
+        reps: "8",
+        setDetails: [
+          { reps: 8, weight: 61 },
+          { reps: 8, weight: 61 },
+          { reps: 8, weight: 61 },
+          { reps: 8, weight: 70 },
+          { reps: 8, weight: 70 },
+        ],
+      },
+      {
+        name: "Ülő combhajlítás",
+        sets: 5,
+        reps: "12-15",
+        setDetails: [
+          { reps: 15, weight: 7 },
+          { reps: 15, weight: 7 },
+          { reps: 15, weight: 7 },
+          { reps: 15, weight: 7 },
+          { reps: 12, weight: 7 },
+        ],
+      },
+      {
+        name: "T-bar / chest-supported row",
+        sets: 5,
+        reps: "6-14",
+        setDetails: [
+          { reps: 14, weight: 115 },
+          { reps: 8, weight: 130 },
+          { reps: 6, weight: 130 },
+          { reps: 6, weight: 130 },
+          { reps: 6, weight: 130 },
+        ],
+      },
+      { name: "Bicepsz curl gépen vs hammer curl", sets: 5, reps: "10", weight: "43" },
+      { name: "Egykezes evezés csiga térden/dumbell", sets: 4, reps: "10", weight: "43" },
+      { name: "Reverse pec deck", sets: 4, reps: "12", weight: "7" },
     ],
   },
 ];
@@ -97,16 +197,14 @@ export function templateToExercises(t: WorkoutTemplate): Exercise[] {
       e.rpe ? `RPE ${e.rpe}` : null,
       e.note,
     ].filter(Boolean);
+    const sets = e.setDetails
+      ? e.setDetails.map((sd) => ({ id: uid(), weight: sd.weight, reps: sd.reps, done: false }))
+      : Array.from({ length: e.sets }, () => ({ id: uid(), weight: w, reps: r, done: false }));
     return {
       id: uid(),
       name: e.name,
       note: noteParts.join(" · "),
-      sets: Array.from({ length: e.sets }, () => ({
-        id: uid(),
-        weight: w,
-        reps: r,
-        done: false,
-      })),
+      sets,
     };
   });
 }
