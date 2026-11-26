@@ -22,11 +22,11 @@ export type WorkoutTemplate = {
 export const TEMPLATES: WorkoutTemplate[] = [
   {
     id: "pusha",
-    day: "Hétfő",
-    name: "Push A — mell + quad",
-    focus: "Mell + quad",
+    day: "Monday",
+    name: "Push A — Chest + Quads",
+    focus: "Chest + quads",
     exercises: [
-      { name: "Hack Squat", sets: 4, reps: "12", weight: "50", note: "öv nélkül" },
+      { name: "Hack Squat", sets: 4, reps: "12", weight: "50", note: "no belt" },
       {
         name: "Machine Chest Press",
         sets: 5,
@@ -39,7 +39,7 @@ export const TEMPLATES: WorkoutTemplate[] = [
           { reps: 8, weight: 100 },
         ],
       },
-      { name: "Cable Lateral Raise", sets: 5, reps: "12", weight: "12.5", note: "szuperszett a gépes mellnyomással" },
+      { name: "Cable Lateral Raise", sets: 5, reps: "12", weight: "12.5", note: "superset with machine chest press" },
       { name: "Single-Arm Cross-Body Triceps Pushdown", sets: 4, reps: "10", weight: "61" },
       { name: "Rope Triceps Pushdown", sets: 4, reps: "" },
       { name: "Dumbbell Shoulder Press", sets: 4, reps: "12" },
@@ -49,9 +49,9 @@ export const TEMPLATES: WorkoutTemplate[] = [
   },
   {
     id: "pulla",
-    day: "Szerda",
-    name: "Pull A — nehéz RDL + vertikális húzás",
-    focus: "Nehéz RDL + vertikális húzás",
+    day: "Wednesday",
+    name: "Pull A — Heavy RDL + Vertical Pull",
+    focus: "Heavy RDL + vertical pull",
     exercises: [
       {
         name: "RDL",
@@ -62,7 +62,7 @@ export const TEMPLATES: WorkoutTemplate[] = [
           { reps: 10, weight: 80 },
           { reps: 8, weight: 90 },
         ],
-        note: "max, öv nélkül",
+        note: "max, no belt",
       },
       { name: "Close-Grip Lat Pulldown", sets: 4, reps: "10", weight: "61" },
       { name: "Single-Arm Rope Pullover", sets: 4, reps: "" },
@@ -85,9 +85,9 @@ export const TEMPLATES: WorkoutTemplate[] = [
   },
   {
     id: "pushb2",
-    day: "Péntek",
-    name: "Push B — váll + quad",
-    focus: "Váll + quad",
+    day: "Friday",
+    name: "Push B — Shoulders + Quads",
+    focus: "Shoulders + quads",
     exercises: [
       { name: "Hack Squat", sets: 4, reps: "12", weight: "60" },
       { name: "Machine Press", sets: 5, reps: "10", weight: "60" },
@@ -101,9 +101,9 @@ export const TEMPLATES: WorkoutTemplate[] = [
   },
   {
     id: "pullb",
-    day: "Vasárnap",
-    name: "Pull B — könnyű RDL + horizontális húzás",
-    focus: "Könnyű RDL + horizontális húzás",
+    day: "Sunday",
+    name: "Pull B — Light RDL + Horizontal Pull",
+    focus: "Light RDL + horizontal pull",
     exercises: [
       {
         name: "RDL",
@@ -153,7 +153,7 @@ export function templateToExercises(t: WorkoutTemplate): Exercise[] {
     const w = parseFirstNumber(e.weight);
     const r = parseFirstInt(e.reps);
     const noteParts = [
-      e.reps ? `${e.reps} ism` : null,
+      e.reps ? `${e.reps} reps` : null,
       e.rpe ? `RPE ${e.rpe}` : null,
       e.note,
     ].filter(Boolean);
