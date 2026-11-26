@@ -211,10 +211,10 @@ function formatSets(sets: { weight: number; reps: number }[]): string {
  * so the current plan (including on-device customizations) can be copied/shared.
  */
 export function buildPlanText(overrides: Record<string, Exercise[]>): string {
-  const lines: string[] = ["LiftTrack — jelenlegi edzésterv", ""];
+  const lines: string[] = ["LiftTrack — current workout plan", ""];
   for (const t of TEMPLATES) {
     const override = overrides[t.id];
-    lines.push(`${t.day} — ${t.name}${override ? " (egyéni mentett verzió)" : ""}`);
+    lines.push(`${t.day} — ${t.name}${override ? " (custom saved version)" : ""}`);
     if (override && override.length > 0) {
       for (const e of override) {
         lines.push(`- ${e.name}: ${formatSets(e.sets)}${e.note ? ` — ${e.note}` : ""}`);

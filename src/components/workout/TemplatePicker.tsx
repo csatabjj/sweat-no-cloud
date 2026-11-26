@@ -27,7 +27,7 @@ export function TemplatePicker({ open, onClose, onPick, onEdit, workouts, overri
 
   if (!open) return null;
 
-  const startBlank = () => onPick(newWorkout("Edzés"));
+  const startBlank = () => onPick(newWorkout("Workout"));
   const startFromTemplate = () => {
     const t = TEMPLATES.find((x) => x.id === selected)!;
     const w = newWorkout(t.name);
@@ -48,7 +48,7 @@ export function TemplatePicker({ open, onClose, onPick, onEdit, workouts, overri
     const text = buildPlanText(overrides);
     if (navigator.share) {
       try {
-        await navigator.share({ text, title: "LiftTrack edzésterv" });
+        await navigator.share({ text, title: "LiftTrack workout plan" });
       } catch {
         // user cancelled the share sheet, nothing to do
       }
@@ -56,9 +56,9 @@ export function TemplatePicker({ open, onClose, onPick, onEdit, workouts, overri
     }
     try {
       await navigator.clipboard.writeText(text);
-      toast.success("Terv a vágólapra másolva");
+      toast.success("Plan copied to clipboard");
     } catch {
-      toast.error("Nem sikerült másolni");
+      toast.error("Could not copy");
     }
   };
 
@@ -67,12 +67,12 @@ export function TemplatePicker({ open, onClose, onPick, onEdit, workouts, overri
       <div className="w-full max-w-md rounded-t-3xl bg-card pb-8 pt-2 shadow-2xl animate-in slide-in-from-bottom duration-300">
         <div className="mx-auto h-1.5 w-12 rounded-full bg-border" />
         <div className="flex items-center justify-between px-5 pb-2 pt-4">
-          <h2 className="text-lg font-bold">Válassz napot</h2>
+          <h2 className="text-lg font-bold">Choose a day</h2>
           <div className="flex items-center gap-1">
             <button
               onClick={sharePlan}
               className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary"
-              aria-label="Terv exportálása"
+              aria-label="Export plan"
             >
               <Share2 className="h-5 w-5" />
             </button>
@@ -89,7 +89,7 @@ export function TemplatePicker({ open, onClose, onPick, onEdit, workouts, overri
             const isCustomized = !!overrides[t.id];
             const prev = findLastWorkoutForTemplate(workouts, t.name);
             const prevDate = prev?.finishedAt
-              ? new Date(prev.finishedAt).toLocaleDateString("hu-HU", { month: "short", day: "numeric" })
+              ? new Date(prev.finishedAt).toLocaleDateString("en-GB", { month: "short", day: "numeric" })
               : null;
             const exerciseCount = overrides[t.id]?.length ?? t.exercises.length;
             return (
@@ -110,23 +110,23 @@ export function TemplatePicker({ open, onClose, onPick, onEdit, workouts, overri
                       </span>
                       {isSuggested && (
                         <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
-                          Ma
+                          Today
                         </span>
                       )}
                       {isCustomized && (
                         <span className="flex items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-foreground">
                           <Sparkles className="h-3 w-3" />
-                          Egyéni
+                          Custom
                         </span>
                       )}
                     </div>
                     <p className="mt-1 font-semibold">{t.name}</p>
                     <p className="mt-0.5 text-xs text-muted-foreground">{t.focus}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">{exerciseCount} gyakorlat</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{exerciseCount} exercises</p>
                     {prevDate && (
                       <p className="mt-1.5 flex items-center gap-1 text-[11px] font-medium text-primary">
                         <TrendingUp className="h-3 w-3" />
-                        Előző számok átemelve ({prevDate})
+                        Previous numbers carried over ({prevDate})
                       </p>
                     )}
                   </button>
@@ -140,7 +140,7 @@ export function TemplatePicker({ open, onClose, onPick, onEdit, workouts, overri
                         editTemplate(t.id);
                       }}
                       className="rounded-lg p-1.5 text-muted-foreground hover:bg-background hover:text-foreground"
-                      aria-label="Sablon szerkesztése"
+                      aria-label="Edit template"
                     >
                       <Pencil className="h-4 w-4" />
                     </button>
@@ -157,13 +157,13 @@ export function TemplatePicker({ open, onClose, onPick, onEdit, workouts, overri
             className="h-12 w-full rounded-2xl font-semibold"
             style={{ backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)" }}
           >
-            Indítás sablonból
+            Start from template
           </Button>
           <button
             onClick={startBlank}
             className="w-full rounded-2xl py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
           >
-            Üres edzés indítása
+            Start empty workout
           </button>
         </div>
       </div>

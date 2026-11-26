@@ -53,7 +53,7 @@ export function useWorkouts() {
   return { workouts, save };
 }
 
-export function newWorkout(name = "Edzés"): Workout {
+export function newWorkout(name = "Workout"): Workout {
   return {
     id: uid(),
     date: new Date().toISOString(),

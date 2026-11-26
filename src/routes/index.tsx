@@ -33,7 +33,7 @@ function useHealthMetricsBridge(saveMetric: (date: string, patch: DailyMetrics) 
     if (weight) patch.weight = parseFloat(weight.replace(",", "."));
     saveMetric(dateKey(), patch);
     window.history.replaceState({}, "", window.location.pathname);
-    toast.success("Napi mérés mentve (Health)");
+    toast.success("Daily metrics saved (Health)");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }
@@ -64,7 +64,7 @@ function Index() {
           saveOverride(planning.templateId, planning.workout.exercises);
           setPlanning(null);
           setPicking(true);
-          toast.success("Sablon mentve");
+          toast.success("Template saved");
         }}
       />
     );
@@ -102,7 +102,7 @@ function Index() {
           activeTemplate
             ? () => {
                 saveOverride(activeTemplate.id, active.exercises);
-                toast.success("Sablon mentve");
+                toast.success("Template saved");
               }
             : undefined
         }
@@ -135,7 +135,7 @@ function Index() {
         }}
         onEdit={(templateId, exercises) => {
           const t = TEMPLATES.find((x) => x.id === templateId);
-          const w = newWorkout(t?.name ?? "Sablon");
+          const w = newWorkout(t?.name ?? "Template");
           w.exercises = exercises;
           setPicking(false);
           setPlanning({ templateId, workout: w });

@@ -8,17 +8,17 @@ type Props = {
 };
 
 export function DailyMetricsCard({ value, onChange }: Props) {
-  const dateLabel = new Date().toLocaleDateString("hu-HU", { month: "short", day: "numeric" });
+  const dateLabel = new Date().toLocaleDateString("en-GB", { month: "short", day: "numeric" });
   return (
     <section className="rounded-2xl border border-sky-300 bg-sky-100 p-4">
       <p className="mb-3 flex items-center justify-between text-xs font-semibold uppercase tracking-widest text-sky-700">
-        <span>Napi mérések</span>
-        <span className="normal-case tracking-normal text-sky-600/80">ma · {dateLabel}</span>
+        <span>Daily metrics</span>
+        <span className="normal-case tracking-normal text-sky-600/80">today · {dateLabel}</span>
       </p>
       <div className="grid grid-cols-3 gap-2">
         <div>
           <label className="mb-1 flex min-h-[2rem] items-start gap-1 text-[10px] uppercase leading-tight tracking-wide text-sky-700/80">
-            <Heart className="mt-0.5 h-3 w-3 shrink-0" /> HRV reggel
+            <Heart className="mt-0.5 h-3 w-3 shrink-0" /> HRV morning
           </label>
           <DecimalInput
             value={value.hrv ?? 0}
@@ -28,7 +28,7 @@ export function DailyMetricsCard({ value, onChange }: Props) {
         </div>
         <div>
           <label className="mb-1 flex min-h-[2rem] items-start gap-1 text-[10px] uppercase leading-tight tracking-wide text-sky-700/80">
-            <Scale className="mt-0.5 h-3 w-3 shrink-0" /> Testsúly reggel
+            <Scale className="mt-0.5 h-3 w-3 shrink-0" /> Body weight morning
           </label>
           <DecimalInput
             value={value.weight ?? 0}
@@ -38,7 +38,7 @@ export function DailyMetricsCard({ value, onChange }: Props) {
         </div>
         <div>
           <label className="mb-1 flex min-h-[2rem] items-start gap-1 text-[10px] uppercase leading-tight tracking-wide text-sky-700/80">
-            <Footprints className="mt-0.5 h-3 w-3 shrink-0" /> Lépés estig
+            <Footprints className="mt-0.5 h-3 w-3 shrink-0" /> Steps by evening
           </label>
           <DecimalInput
             value={value.steps ?? 0}

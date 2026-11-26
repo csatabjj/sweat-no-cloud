@@ -40,7 +40,7 @@ function formatWeekRange(start: Date): string {
   const end = new Date(start);
   end.setDate(end.getDate() + 6);
   const fmt = (d: Date) =>
-    d.toLocaleDateString("hu-HU", { month: "short", day: "numeric" });
+    d.toLocaleDateString("en-GB", { month: "short", day: "numeric" });
   return `${fmt(start)} – ${fmt(end)}`;
 }
 
@@ -143,9 +143,9 @@ export function ProgressView({ workouts }: Props) {
   if (finished.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-border p-8 text-center">
-        <p className="text-sm text-muted-foreground">Még nincs adat a fejlődéshez.</p>
+        <p className="text-sm text-muted-foreground">No progress data yet.</p>
         <p className="mt-1 text-xs text-muted-foreground">
-          Fejezz be pár edzést, és itt heti bontásban látod a haladást.
+          Finish a few workouts and you will see your weekly progress here.
         </p>
       </div>
     );
@@ -155,7 +155,7 @@ export function ProgressView({ workouts }: Props) {
     <div className="space-y-6">
       <div>
         <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-          Heti összesítés
+          Weekly summary
         </h3>
         <ul className="space-y-2">
           {weeks.slice(0, 8).map((wk, i) => {
@@ -176,7 +176,7 @@ export function ProgressView({ workouts }: Props) {
                       {formatWeekRange(wk.weekStart)}
                     </p>
                     <p className="mt-0.5 font-semibold">
-                      {wk.workouts.length} edzés · {wk.totalSets} szett
+                      {wk.workouts.length} workouts · {wk.totalSets} sets
                     </p>
                   </div>
                   <div className="text-right">
@@ -200,7 +200,7 @@ export function ProgressView({ workouts }: Props) {
 
       <div>
         <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-          Gyakorlatok fejlődése
+          Exercise progress
         </h3>
         <ul className="space-y-2">
           {exerciseHistory.map((ex) => {
@@ -217,7 +217,7 @@ export function ProgressView({ workouts }: Props) {
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-semibold">{ex.name}</p>
                     <p className="mt-0.5 text-xs text-muted-foreground">
-                      Csúcs: {last.topWeight} kg × {last.topReps}
+                      Top: {last.topWeight} kg × {last.topReps}
                       {ex.weeks.length > 1 && diff !== 0 && (
                         <span
                           className={
@@ -225,7 +225,7 @@ export function ProgressView({ workouts }: Props) {
                           }
                         >
                           {diff > 0 ? "+" : ""}
-                          {diff} kg az elejéhez
+                          {diff} kg since start
                         </span>
                       )}
                     </p>
@@ -248,7 +248,7 @@ export function ProgressView({ workouts }: Props) {
                             {formatWeekRange(w.weekStart)}
                           </span>
                           <span className="font-medium">
-                            {w.topWeight} kg × {w.topReps} · {w.sets} szett ·{" "}
+                            {w.topWeight} kg × {w.topReps} · {w.sets} sets ·{" "}
                             {w.volume} kg
                           </span>
                         </li>

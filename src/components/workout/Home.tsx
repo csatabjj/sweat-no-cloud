@@ -15,7 +15,7 @@ type Props = {
   onEditFinished?: (w: Workout) => void;
 };
 
-const dayNames = ["V", "H", "K", "Sz", "Cs", "P", "Sz"];
+const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActive, onEditFinished }: Props) {
   const [tab, setTab] = useState<"history" | "progress">("history");
@@ -58,9 +58,9 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
   const exportToCsv = useCallback(() => {
     if (finished.length === 0) return;
     const rows: string[][] = [];
-    rows.push(["Edzes", "Datum", "Gyakorlat", "Set", "Suly (kg)", "Ismetles", "Megjegyzes"]);
+    rows.push(["Workout", "Date", "Exercise", "Set", "Weight (kg)", "Reps", "Note"]);
     for (const w of finished) {
-      const date = new Date(w.finishedAt!).toLocaleDateString("hu-HU");
+      const date = new Date(w.finishedAt!).toLocaleDateString("en-GB");
       for (const ex of w.exercises) {
         const doneSets = ex.sets.filter((s) => s.done);
         if (doneSets.length === 0) continue;
@@ -82,7 +82,7 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `edzesek_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `workouts_${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -92,7 +92,7 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
   const exportMetricsToCsv = useCallback(() => {
     const dates = Object.keys(metrics).sort();
     if (dates.length === 0) return;
-    const rows: string[][] = [["Datum", "HRV", "Testsuly (kg)", "Lepes"]];
+    const rows: string[][] = [["Date", "HRV", "Body weight (kg)", "Steps"]];
     for (const date of dates) {
       const m = metrics[date];
       rows.push([date, m.hrv ? String(m.hrv) : "", m.weight ? String(m.weight) : "", m.steps ? String(m.steps) : ""]);
@@ -102,7 +102,7 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `napi_meresek_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `daily_metrics_${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -112,8 +112,8 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
   return (
     <div className="min-h-screen pb-32">
       <header className="px-5 pb-6 pt-12">
-        <p className="text-sm text-muted-foreground">Üdv újra</p>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight">Mai edzés</h1>
+        <p className="text-sm text-muted-foreground">Welcome back</p>
+        <h1 className="mt-1 text-3xl font-bold tracking-tight">Today's workout</h1>
       </header>
 
       <section className="px-5">
@@ -125,7 +125,7 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest opacity-80">Streak</p>
               <p className="mt-1 text-5xl font-black">{streak}</p>
-              <p className="mt-1 text-sm opacity-80">{streak === 1 ? "nap" : "nap egymás után"}</p>
+              <p className="mt-1 text-sm opacity-80">{streak === 1 ? "day" : "days in a row"}</p>
             </div>
             <Flame className="h-10 w-10 opacity-90" />
           </div>
@@ -148,12 +148,12 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
         <div className="rounded-2xl bg-card p-4">
           <Dumbbell className="h-5 w-5 text-primary" />
           <p className="mt-3 text-2xl font-bold">{finished.length}</p>
-          <p className="text-xs text-muted-foreground">összes edzés</p>
+          <p className="text-xs text-muted-foreground">total workouts</p>
         </div>
         <div className="rounded-2xl bg-card p-4">
           <TrendingUp className="h-5 w-5 text-primary" />
           <p className="mt-3 text-2xl font-bold">{(totalVolume / 1000).toFixed(1)}t</p>
-          <p className="text-xs text-muted-foreground">összes volumen</p>
+          <p className="text-xs text-muted-foreground">total volume</p>
         </div>
       </section>
 
@@ -170,7 +170,7 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
                 tab === "history" ? "bg-background shadow-sm" : "text-muted-foreground"
               }`}
             >
-              Előzmények
+              History
             </button>
             <button
               onClick={() => setTab("progress")}
@@ -178,7 +178,7 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
                 tab === "progress" ? "bg-background shadow-sm" : "text-muted-foreground"
               }`}
             >
-              Fejlődés
+              Progress
             </button>
           </div>
           <div className="flex items-center gap-2">
@@ -196,15 +196,15 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
               className="flex items-center gap-1.5 rounded-lg bg-secondary/60 px-3 py-1.5 text-sm font-semibold text-muted-foreground transition active:scale-95 disabled:opacity-40"
             >
               <Download className="h-4 w-4" />
-              Mérések
+              Metrics
             </button>
           </div>
         </div>
         {tab === "history" ? (
           recent.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border p-8 text-center">
-              <p className="text-sm text-muted-foreground">Még nincs befejezett edzés.</p>
-              <p className="mt-1 text-xs text-muted-foreground">Indítsd el az elsőt lent.</p>
+              <p className="text-sm text-muted-foreground">No finished workouts yet.</p>
+              <p className="mt-1 text-xs text-muted-foreground">Start your first one below.</p>
             </div>
           ) : (
             <ul className="space-y-2">
@@ -223,7 +223,7 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
                       <div>
                         <p className="font-semibold">{w.name}</p>
                         <p className="text-xs text-muted-foreground">
-                          {new Date(w.finishedAt!).toLocaleDateString("hu-HU", {
+                          {new Date(w.finishedAt!).toLocaleDateString("en-GB", {
                             month: "short",
                             day: "numeric",
                             weekday: "short",
@@ -233,7 +233,7 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
                       <div className="flex items-center gap-3">
                         <div className="text-right">
                           <p className="text-sm font-bold">{vol} kg</p>
-                          <p className="text-xs text-muted-foreground">{sets} szett · {w.exercises.length} gyakorlat</p>
+                          <p className="text-xs text-muted-foreground">{sets} sets · {w.exercises.length} exercises</p>
                         </div>
                         <Pencil className="h-4 w-4 text-muted-foreground" />
                       </div>
@@ -258,13 +258,13 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
                 style={{ backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
               >
                 <Play className="mr-2 h-5 w-5" />
-                Vissza az edzéshez
+                Back to workout
               </Button>
               <Button
                 onClick={onDiscardActive}
                 variant="secondary"
                 className="h-16 w-16 rounded-2xl"
-                aria-label="Folyamatban lévő edzés eldobása"
+                aria-label="Discard workout in progress"
               >
                 <X className="h-5 w-5" />
               </Button>
@@ -273,7 +273,7 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
               onClick={onStart}
               className="w-full text-center text-xs font-medium text-muted-foreground hover:text-foreground"
             >
-              + Új edzés indítása helyette
+              + Start a new workout instead
             </button>
           </div>
         ) : (
@@ -283,7 +283,7 @@ export function Home({ workouts, onStart, activeWorkout, onResume, onDiscardActi
             style={{ backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
           >
             <Plus className="mr-2 h-5 w-5" />
-            Új edzés indítása
+            Start new workout
           </Button>
         )}
       </div>

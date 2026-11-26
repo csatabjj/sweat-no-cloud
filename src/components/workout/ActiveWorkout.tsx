@@ -98,12 +98,12 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
           </button>
           <div className="text-center">
             <p className="text-xs uppercase tracking-widest text-muted-foreground">
-              {planMode ? "Tervezés" : editingFinished ? "Szerkesztés" : "Folyamatban"}
+              {planMode ? "Planning" : editingFinished ? "Editing" : "In progress"}
             </p>
             <p className="text-sm font-semibold">{workout.name}</p>
           </div>
           {onDiscard && !planMode ? (
-            <button onClick={onDiscard} className="rounded-full p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive" aria-label="Eldobás">
+            <button onClick={onDiscard} className="rounded-full p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive" aria-label="Discard">
               <Trash2 className="h-5 w-5" />
             </button>
           ) : (
@@ -112,16 +112,16 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
         </div>
         {planMode ? (
           <div className="mt-3 rounded-xl bg-secondary/60 px-3 py-2 text-center text-xs text-muted-foreground">
-            Szabadon szerkesztheted a gyakorlatokat és számokat. A mentés után minden új edzés ebből indul.
+            Edit exercises and numbers freely. After saving, every new workout starts from this.
           </div>
         ) : (
           <div className="mt-3 grid grid-cols-2 gap-3 text-center">
             <div className="rounded-xl bg-secondary/60 py-2">
-              <p className="text-xs text-muted-foreground">Szettek</p>
+              <p className="text-xs text-muted-foreground">Sets</p>
               <p className="text-lg font-bold">{totalSets}</p>
             </div>
             <div className="rounded-xl bg-secondary/60 py-2">
-              <p className="text-xs text-muted-foreground">Volumen</p>
+              <p className="text-xs text-muted-foreground">Volume</p>
               <p className="text-lg font-bold">{totalVolume} kg</p>
             </div>
           </div>
@@ -138,7 +138,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                     value={ex.name}
                     onChange={(e) => updateExercise(ex.id, { name: e.target.value })}
                     className="h-9 text-base font-semibold"
-                    placeholder="Gyakorlat neve"
+                    placeholder="Exercise name"
                   />
                 ) : editingNameId === ex.id ? (
                   <Input
@@ -148,7 +148,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                     onBlur={() => setEditingNameId(null)}
                     onKeyDown={(e) => e.key === "Enter" && setEditingNameId(null)}
                     className="h-9 text-base font-semibold"
-                    placeholder="Gyakorlat neve"
+                    placeholder="Exercise name"
                   />
                 ) : (
                   <div className="flex items-center gap-2">
@@ -156,7 +156,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                     <button
                       onClick={() => setEditingNameId(ex.id)}
                       className="rounded-md p-1 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                      aria-label="Gyakorlat nevének szerkesztése"
+                      aria-label="Edit exercise name"
                     >
                       <Pencil className="h-3.5 w-3.5" />
                     </button>
@@ -167,7 +167,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                     value={ex.note ?? ""}
                     onChange={(e) => updateExercise(ex.id, { note: e.target.value })}
                     className="mt-1 h-8 text-xs"
-                    placeholder="Megjegyzés (opcionális)"
+                    placeholder="Note (optional)"
                   />
                 ) : editingNoteId === ex.id ? (
                   <Input
@@ -177,7 +177,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                     onBlur={() => setEditingNoteId(null)}
                     onKeyDown={(e) => e.key === "Enter" && setEditingNoteId(null)}
                     className="mt-1 h-8 text-xs"
-                    placeholder="Megjegyzés (opcionális)"
+                    placeholder="Note (optional)"
                   />
                 ) : (
                   <div className="mt-0.5 flex items-center gap-1">
@@ -185,7 +185,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                     <button
                       onClick={() => setEditingNoteId(ex.id)}
                       className="rounded p-0.5 text-muted-foreground/40 hover:text-muted-foreground"
-                      aria-label="Megjegyzés szerkesztése"
+                      aria-label="Edit note"
                     >
                       <Pencil className="h-2.5 w-2.5" />
                     </button>
@@ -198,7 +198,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                     onClick={() => moveExercise(exIndex, -1)}
                     disabled={exIndex === 0}
                     className="flex h-7 w-8 items-center justify-center rounded-md text-foreground hover:bg-secondary disabled:opacity-25"
-                    aria-label="Feljebb"
+                    aria-label="Move up"
                   >
                     <ChevronUp className="h-5 w-5" />
                   </button>
@@ -206,7 +206,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                     onClick={() => moveExercise(exIndex, 1)}
                     disabled={exIndex === workout.exercises.length - 1}
                     className="flex h-7 w-8 items-center justify-center rounded-md text-foreground hover:bg-secondary disabled:opacity-25"
-                    aria-label="Lejjebb"
+                    aria-label="Move down"
                   >
                     <ChevronDown className="h-5 w-5" />
                   </button>
@@ -219,8 +219,8 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
 
             <div className="mb-2 grid grid-cols-[24px_1fr_1fr_40px_32px] gap-2 px-1 text-[10px] uppercase tracking-wider text-muted-foreground">
               <span>#</span>
-              <span>Súly (kg)</span>
-              <span>Ism.</span>
+              <span>Weight (kg)</span>
+              <span>Reps</span>
               <span></span>
               <span></span>
             </div>
@@ -254,7 +254,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                         ? "bg-primary text-primary-foreground"
                         : "bg-secondary text-muted-foreground"
                     }`}
-                    aria-label="Kész"
+                    aria-label="Done"
                   >
                     <Check className="h-5 w-5" />
                   </button>
@@ -262,7 +262,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
                     onClick={() => removeSet(ex, s.id)}
                     disabled={ex.sets.length === 1}
                     className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive disabled:opacity-30"
-                    aria-label="Szett törlése"
+                    aria-label="Delete set"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -274,7 +274,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
               onClick={() => addSet(ex)}
               className="mt-3 w-full rounded-xl border border-dashed border-border py-2 text-sm font-medium text-muted-foreground hover:bg-secondary"
             >
-              + Szett hozzáadása
+              + Add set
             </button>
           </section>
         ))}
@@ -285,7 +285,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
               value={exerciseName}
               onChange={(e) => setExerciseName(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addExercise()}
-              placeholder="Pl. Fekvenyomás"
+              placeholder="e.g. Bench Press"
               className="h-11"
             />
             <Button onClick={addExercise} size="icon" className="h-11 w-11 shrink-0">
@@ -305,7 +305,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
             onClick={onReset}
             className="mb-2 w-full rounded-xl py-2 text-xs font-medium text-muted-foreground hover:text-destructive"
           >
-            Visszaállítás alapértelmezettre
+            Reset to default
           </button>
         )}
         {onSaveTemplate && !planMode && (
@@ -313,7 +313,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
             onClick={onSaveTemplate}
             className="mb-2 w-full rounded-xl border border-emerald-600/30 bg-emerald-500/15 py-2.5 text-sm font-medium text-emerald-700 hover:bg-emerald-500/25 transition"
           >
-            Sablon módosítása
+            Update template
           </button>
         )}
         <Button
@@ -326,7 +326,7 @@ export function ActiveWorkout({ workout, onChange, onFinish, onCancel, planMode,
               : { backgroundImage: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }
           }
         >
-          {planMode ? "Sablon módosítása" : editingFinished ? "Módosítások mentése" : "Edzés befejezése"}
+          {planMode ? "Update template" : editingFinished ? "Save changes" : "Finish workout"}
         </Button>
       </div>
     </div>
